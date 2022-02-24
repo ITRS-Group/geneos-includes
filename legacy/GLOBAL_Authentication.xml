@@ -1,0 +1,131 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<!--Edited using Gateway Setup Editor version GA3.3.0-151120 at 2016-01-21 11:54:14 by jhullah on ITRSLP055-->
+<!-- Gateway-created setup include file for user INSTRUCTOR-LAP1\instructor at 86.182.168.209 -->
+<gateway compatibility="1" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="http://schema.itrsgroup.com/GA3.3.0-150928/gateway.xsd">
+	<authentication>
+		<authenticateUsers>false</authenticateUsers>
+		<users>
+			<userGroup name="Administrators">
+				<roleProperties>
+					<roleProperty>Administrators</roleProperty>
+				</roleProperties>
+				<user name="Generic User">
+					<fullName>Generic User</fullName>
+					<genericUser>true</genericUser>
+					<allowLogin>true</allowLogin>
+					<allowSystemAuth>true</allowSystemAuth>
+				</user>
+			</userGroup>
+			<userGroup name="Read Only">
+				<roleProperties>
+					<roleProperty>Read Only</roleProperty>
+				</roleProperties>
+			</userGroup>
+			<userGroup name="Restricted Commands">
+				<roleProperties>
+					<roleProperty>Restricted Command List</roleProperty>
+					<roleProperty>Snooze No Manual</roleProperty>
+					<roleProperty>User Assign Only Until</roleProperty>
+				</roleProperties>
+			</userGroup>
+		</users>
+		<caseInsensitiveUsernames>true</caseInsensitiveUsernames>
+		<roles>
+			<role name="Administrators">
+				<roleProperties>
+					<roleProperty>Administrators</roleProperty>
+				</roleProperties>
+			</role>
+			<role name="Read Only">
+				<permissions>
+					<permission>
+						<setup>
+							<files>
+								<mainFile>true</mainFile>
+								<file>*</file>
+							</files>
+							<access>view</access>
+							<locking>none</locking>
+						</setup>
+					</permission>
+				</permissions>
+				<roleProperties>
+					<roleProperty>Read Only</roleProperty>
+				</roleProperties>
+			</role>
+			<role name="Restricted Command List">
+				<permissions>
+					<permission>
+						<command>
+							<targets>
+								<target>/*</target>
+							</targets>
+							<names>
+								<name>/PLUGIN:FKM:view*</name>
+								<name>/PLUGIN:FKM:triggerDetails</name>
+								<name>/PLUGIN:CPU*</name>
+								<name>/PLUGIN:HARDWARE*</name>
+								<name>/PLUGIN:PROCESSES:allProcesses</name>
+								<name>/PLUGIN:PROCESSES:details</name>
+								<name>/PLUGIN:PROCESSES:log</name>
+								<name>/PLUGIN:PROCESSES:top20Processes</name>
+								<name>/PLUGIN:sampleNow</name>
+								<name>/PROBE:viewLog</name>
+								<name>/ALERTS:showAlerts</name>
+								<name>/RULES:showRules</name>
+							</names>
+							<access>execute</access>
+						</command>
+					</permission>
+				</permissions>
+				<roleProperties>
+					<roleProperty>Restricted Command List</roleProperty>
+				</roleProperties>
+			</role>
+			<role name="Snooze No Manual">
+				<permissions>
+					<permission>
+						<command>
+							<targets>
+								<target>/*</target>
+							</targets>
+							<names>
+								<name>/SNOOZE:info</name>
+								<name>/SNOOZE:severity*</name>
+								<name>/SNOOZE:date*</name>
+								<name>/SNOOZE:time*</name>
+								<name>/SNOOZE:until*</name>
+								<name>/SNOOZE:unsnooze*</name>
+							</names>
+							<access>execute</access>
+						</command>
+					</permission>
+				</permissions>
+				<roleProperties>
+					<roleProperty>Snooze No Manual</roleProperty>
+				</roleProperties>
+			</role>
+			<role name="User Assign Only Until">
+				<permissions>
+					<permission>
+						<command>
+							<targets>
+								<target>/*</target>
+							</targets>
+							<names>
+								<name>/USERASSIGNMENT:assignUntil*</name>
+								<name>/USERASSIGNMENT:assignForTimePeriod</name>
+								<name>/USERASSIGNMENT:info</name>
+								<name>/USERASSIGNMENT:unassign</name>
+							</names>
+							<access>execute</access>
+						</command>
+					</permission>
+				</permissions>
+				<roleProperties>
+					<roleProperty>User Assign Only Until</roleProperty>
+				</roleProperties>
+			</role>
+		</roles>
+	</authentication>
+</gateway>

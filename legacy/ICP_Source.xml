@@ -1,0 +1,240 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<!--Edited using Gateway Setup Editor version GA4.4.0-171005 at 2018-03-21 15:11:36 by gclandorf on GABRIELCLAN067B-->
+<gateway compatibility="1" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="http://schema.itrsgroup.com/GA4.4.0-171024/gateway.xsd">
+	<types>
+		<typeGroup disabled="true" name="Capacity Planner">
+			<type name="Capacity Planner Windows">
+				<sampler ref="NT_CPU_Model"/>
+			</type>
+			<type name="Capacity Planner Linux">
+				<sampler ref="Linux_CPU_Model"/>
+			</type>
+			<type name="Capacity Planner Solaris">
+				<sampler ref="Solaris_CPU_Model"/>
+			</type>
+		</typeGroup>
+	</types>
+	<samplers>
+		<samplerGroup name="Capacity Planner">
+			<sampler name="Capacity Planner Linux_CPU_Model">
+				<var-group>
+					<data>Capacity Planner</data>
+				</var-group>
+				<sampleInterval>
+					<data>600</data>
+				</sampleInterval>
+				<plugin>
+					<toolkit>
+						<samplerScript>
+							<data>./cpu.sh</data>
+						</samplerScript>
+						<script>
+							<contents>
+								<data>#!/bin/bash
+
+# lscpu only found on kernel 6 and newer
+COMMAND=lscpu
+type ${COMMAND}  &gt;/dev/null 2&gt;&amp;1
+
+# if lscpu exists run it, else cat /proc/cpuinfo
+if [[ $? -eq 0 ]]; then
+    OUTPUT=$(${COMMAND})
+else
+    COMMAND=&apos;/proc/cpuinfo&apos;
+    OUTPUT=$(cat /proc/cpuinfo | egrep -i &apos;^vendor|^model name|^cpu MHz&apos; | sort -u | sed -e &apos;s/^cpu*/\U&amp;\E/&apos; -e &apos;s/vendor_id/Vendor ID/&apos; -e &apos;s/^./\U&amp;\E/&apos;)
+fi
+
+echo &quot;Name,Value&quot;
+# Check if the output is empty
+if [[ -z &quot;${OUTPUT}&quot; ]]; then
+    echo &quot;Empty,OutPut&quot;
+else
+    echo &quot;${OUTPUT}&quot; | sed -e &apos;s/,/\\,/g&apos; -e &apos;s/:/,/g&apos; -e &apos;s/[[:space:]]\+/ /g&apos; -e &apos;s/ ,/,/&apos; -e &apos;s/, /,/&apos;
+fi
+echo &quot;&lt;!&gt;command,${COMMAND}&quot;
+</data>
+							</contents>
+							<filename>
+								<data>cpu.sh</data>
+							</filename>
+						</script>
+						<showExecutionDuration>true</showExecutionDuration>
+					</toolkit>
+				</plugin>
+			</sampler>
+			<sampler name="Capacity Planner Solaris_CPU_Model">
+				<var-group>
+					<data>Capacity Planner</data>
+				</var-group>
+				<sampleInterval>
+					<data>600</data>
+				</sampleInterval>
+				<plugin>
+					<toolkit>
+						<samplerScript>
+							<data>./cpu.sh</data>
+						</samplerScript>
+						<script>
+							<contents>
+								<data>#!/bin/bash
+
+OUTPUT=$(psrinfo -vp | tail -1)
+echo &quot;Name,Value&quot;
+# Check if the output is empty
+if [[ -z &quot;${OUTPUT}&quot; ]]; then
+    echo &quot;Empty,OutPut&quot;
+else
+    echo &quot;Model name,${OUTPUT}&quot;
+fi</data>
+							</contents>
+							<filename>
+								<data>cpu.sh</data>
+							</filename>
+						</script>
+						<showExecutionDuration>true</showExecutionDuration>
+					</toolkit>
+				</plugin>
+			</sampler>
+			<sampler name="Capacity Planner Windows_CPU_Model">
+				<var-group>
+					<data>Capacity Planner</data>
+				</var-group>
+				<sampleInterval>
+					<data>600</data>
+				</sampleInterval>
+				<sampleOnStartup>true</sampleOnStartup>
+				<plugin>
+					<wmi>
+						<columnMode>
+							<columns>
+								<class>
+									<data>Win32_Processor</data>
+								</class>
+								<column>
+									<member>
+										<data>DeviceID</data>
+									</member>
+									<displayName>
+										<data>CPU</data>
+									</displayName>
+								</column>
+								<column>
+									<member>
+										<data>NumberOfLogicalProcessors</data>
+									</member>
+								</column>
+								<column>
+									<member>
+										<data>Name</data>
+									</member>
+									<displayName>
+										<data>clockspeed </data>
+									</displayName>
+								</column>
+								<column>
+									<member>
+										<data>NumberOfCores</data>
+									</member>
+								</column>
+							</columns>
+						</columnMode>
+					</wmi>
+				</plugin>
+				<dataviews>
+					<dataview name="Capacity Planner Windows_CPU_Model">
+						<additions>
+							<var-headlines>
+								<data>
+									<headline>
+										<data>numOnlineCpus</data>
+									</headline>
+									<headline>
+										<data>numPhysicalCPUs</data>
+									</headline>
+								</data>
+							</var-headlines>
+						</additions>
+					</dataview>
+				</dataviews>
+			</sampler>
+		</samplerGroup>
+	</samplers>
+	<rules>
+		<rule name="Compute_NT_CPU_Total">
+			<targets>
+				<target>/geneos/gateway/directory/probe/managedEntity/sampler[(@name=&quot;Capacity Planner Windows_CPU_Model&quot;)][(param(&quot;Group&quot;)=&quot;Capacity Planner&quot;)]/dataview/headlines/cell[(@name=&quot;numOnlineCpus&quot;)]</target>
+			</targets>
+			<priority>1</priority>
+			<pathAliases>
+				<pathAlias name="logicalProcessors">ancestor::dataview[(@name=&quot;Capacity Planner Windows_CPU_Model&quot;)]/rows/row/cell[(@column=&quot;NumberOfLogicalProcessors&quot;)]</pathAlias>
+			</pathAliases>
+			<block>
+				<set>
+					<var ref="total"/>
+					<total>
+						<dataItems>
+							<pathAlias ref="logicalProcessors"/>
+							<property>@value</property>
+						</dataItems>
+					</total>
+				</set>
+				<if>
+					<gt>
+						<var ref="total"/>
+						<integer>0</integer>
+					</gt>
+					<transaction>
+						<update>
+							<property>@value</property>
+							<var ref="total"/>
+						</update>
+					</transaction>
+				</if>
+			</block>
+		</rule>
+		<rule name="Compute_NT_CPU_Count">
+			<targets>
+				<target>/geneos/gateway/directory/probe/managedEntity/sampler[(@name=&quot;Capacity Planner Windows_CPU_Model&quot;)][(param(&quot;Group&quot;)=&quot;Capacity Planner&quot;)]/dataview/headlines/cell[(@name=&quot;numPhysicalCPUs&quot;)]</target>
+			</targets>
+			<priority>1</priority>
+			<pathAliases>
+				<pathAlias name="logicalProcessors">ancestor::dataview[(@name=&quot;Capacity Planner Windows_CPU_Model&quot;)]/rows/row/cell[(@column=&quot;NumberOfLogicalProcessors&quot;)]</pathAlias>
+			</pathAliases>
+			<block>
+				<set>
+					<var ref="count"/>
+					<count>
+						<dataItems>
+							<pathAlias ref="logicalProcessors"/>
+							<property>@value</property>
+						</dataItems>
+					</count>
+				</set>
+				<if>
+					<gt>
+						<var ref="count"/>
+						<integer>0</integer>
+					</gt>
+					<transaction>
+						<update>
+							<property>@value</property>
+							<var ref="count"/>
+						</update>
+					</transaction>
+				</if>
+			</block>
+		</rule>
+	</rules>
+	<exportedData>
+		<dataSet name="Insights Capacity Planner - Infrastructure Data">
+			<paths>
+				<path>/geneos/gateway/directory/probe/managedEntity/sampler[(param(&quot;PluginName&quot;)=&quot;HARDWARE&quot;)]</path>
+				<path>/geneos/gateway/directory/probe/managedEntity/sampler[(param(&quot;PluginName&quot;)=&quot;CPU&quot;)]</path>
+				<path>/geneos/gateway/directory/probe/managedEntity/sampler[(param(&quot;PluginName&quot;)=&quot;DISK&quot;)]</path>
+				<path>/geneos/gateway/directory/probe/managedEntity/sampler[wild(@name,&quot;Capacity Planner*&quot;)][(param(&quot;Group&quot;)=&quot;Capacity Planner&quot;)]</path>
+				<path>/geneos/gateway/directory/probe/managedEntity/sampler[(param(&quot;PluginName&quot;)=&quot;DEVICEIO&quot;)]</path>
+				<path>/geneos/gateway/directory/probe/managedEntity/sampler[(@name=&quot;DEVICEIO-NT&quot;)]</path>
+			</paths>
+		</dataSet>
+	</exportedData>
+</gateway>
