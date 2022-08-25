@@ -8,9 +8,9 @@ There are three include files:
   * To enable your Gateway(s) to write out stats files you can either make a small change to your configuration by hand or use this include file.
 * [`monitor.xml`](monitor.xml)
   * This include contains the basic configuration to load stats files for any number of Gateways on the same host and to transform some of the counters into more useful CPU percentages over known periods. To use it you must create Managed Entities, one per Gateway being monitored, and set some variables to suit.
-    Note: At this time, there are no Rules defined.
 * [`monitor_rules.xml`](monitor_rules.xml)
   * This include contains a number of Rules to apply to the views created in the `monitor.xml` above but have been separated out as the chosen thresholds and other logic may not suit all users. Start with this file but change it as you learn more about the behaviour of Geneos Gateways in your environment.
+    Note: At this time, there are no severity setting Rules defined.
 
 ## How to use
 
