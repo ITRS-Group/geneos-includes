@@ -2068,7 +2068,7 @@
 			<string>gateway.log</string>
 		</var>
 		<var name="gwLoadSampleInterval">
-			<integer>60</integer>
+			<integer>20</integer>
 		</var>
 		<var name="gwLoadEnvInterval">
 			<integer>5</integer>

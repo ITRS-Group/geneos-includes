@@ -122,8 +122,8 @@ There are a number of variables that can be used to override default behaviour:
     This must be set to the directory containing the stats file. It is also used to locate the Gateway log file, see below.
   * `gwLoadStatsFile` - Default `stats.xml`
     The name of the stats file your gateways write to. You may wish to changes this if you write to a file containing the name of the gateway in a common directory.
-  * `gwLoadSampleInterval` - Default 60 seconds
-    The sample interval for the Gateway Load samplers.
+  * `gwLoadSampleInterval` - Default 20 seconds
+    The sample interval for the Gateway Load samplers. This should always be less than half of the shortest history period you configure, e.g. 30 seconds or less if you want to see valid per-minute data.
   * `gwLoadHistoryColumns` - Default `[ cpu1Min, cpu5Min ]` Also available `[ cpuHour, cpuDay ]`
     A string list variable that sets which additional columns are added to the many of the dataviews. If the columns exist then Rules run to populate them using History Periods and a delta calculation. Enabling all of these can be expensive in both CPU and memory and will also delay the Gateway start-up. The default lets you see the percentage of CPU used for each metric for the previous 1 and 5 minutes, but you can also add the last hour and last day by redefining this string list variable.
   * `gwLoadDatabaseColumns` - Default `[ cpu1Min, cpu5Min, updates1Min, updates5Min ]` - Also available `[ cpuHour, cpuDay, updatesHour, updatesDay ]`
