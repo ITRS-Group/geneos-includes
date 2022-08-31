@@ -121,11 +121,13 @@ There are a number of variables that can be used to override default behaviour:
   * `gwLoadDirectory` - Default `/tmp`
     This must be set to the directory containing the stats file. It is also used to locate the Gateway log file, see below.
   * `gwLoadStatsFile` - Default `stats.xml`
-    The name of the stats file your gateways write to. You may wish to changes this if you write to a file containing the name of the gateway in a commmon directory.
+    The name of the stats file your gateways write to. You may wish to changes this if you write to a file containing the name of the gateway in a common directory.
   * `gwLoadSampleInterval` - Default 60 seconds
     The sample interval for the Gateway Load samplers.
   * `gwLoadHistoryColumns` - Default `[ cpu1Min, cpu5Min, cpuHour, cpuDay]`
-    A string list that can be used to limit - but not add to - the time interval columns used to present the calculated CPU loads. If the number of Gateways being monitored is large then the load of on monitoring gateway can also increase. by removing unwanted columns you can reduce both the Rule load and the volumn of History Periods used.
+    A string list that can be used to limit - but not add to - the time interval columns used to present the calculated CPU loads. If the number of Gateways being monitored is large then the load of on monitoring gateway can also increase. by removing unwanted columns you can reduce both the Rule load and the volume of History Periods used.
+  * `gwLoadDatabaseColumns` - Default `[ cpu1Min, cpu5Min, cpuHour, cpuDay, updates1Min, updates5Min, updatesHour, updatesDay ]`
+    As above, you can reduce the columns displayed in the Database Logging monitor views, if required.
 
 * For Additional Environment Monitoring (with Netprobe)
 * `gwLoadGatewayName` - Default `none`, Required
