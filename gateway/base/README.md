@@ -17,8 +17,9 @@ To use these files directly from this site:
      <includeGroup name="Geneos Base Includes">
        <include>
          <priority>10050</priority>
-         <required>true</required>
+         <required>false</required>
          <location>https://itrs-group.github.io/geneos-includes/gateway/base/common.xml</location>
+         <reloadInterval>300</reloadInterval>
        </include>
      </includeGroup>
      ```
@@ -29,4 +30,3 @@ To use these files directly from this site:
   5. Validate and save
   
 To use a local copy, which is recommended in any production environment, download the files by selecting the names in the list above and then change the location path(s) once you have pasted the XML into your configuration.
-

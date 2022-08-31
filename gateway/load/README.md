@@ -32,8 +32,9 @@ To enable a load monitoring stats file to be written at regular intervals you sh
      <includeGroup name="Gateway Load">
        <include>
          <priority>10601</priority>
-         <required>true</required>
+         <required>false</required>
          <location>https://itrs-group.github.io/geneos-includes/gateway/load/record.xml</location>
+         <reloadInterval>300</reloadInterval>
        </include>
      </includeGroup>
      ```
@@ -55,13 +56,15 @@ You should probably create a new Gateway specifically to monitor load on your ot
      <includeGroup name="Geneos Load Monitoring">
          <include>
              <priority>10401</priority>
-             <required>true</required>
+             <required>false</required>
              <location>https://itrs-group.github.io/geneos-includes/gateway/load/monitor.xml</location>
+             <reloadInterval>300</reloadInterval>
          </include>
          <include>
              <priority>10402</priority>
-             <required>true</required>
+             <required>false</required>
              <location>https://itrs-group.github.io/geneos-includes/gateway/load/monitor_rules.xml</location>
+             <reloadInterval>300</reloadInterval>
          </include>
      </includeGroup>
      ```
@@ -134,3 +137,19 @@ There are a number of variables that can be used to override default behaviour:
 * `gwLoadEnvHistoryColumns` - Default `[ hour, day]`
   As above for `gwLoadHistoryColumns` this string list can be used to limit which additional columns are calculated.
 
+## More Details
+
+The configurations above include a number of settings that have been chosen to work well in most environments. The main monitor.xml file sets these value, which can be overridden in the main Gateway configuration file:
+
+* Rule Threads - Set to 4
+  While the default value for this is to not use rule threads, setting this to 4 gives a good balance of available CPU resources versus processing latency.
+* Persistence - Write period 30, Rewrite period 500
+  History Period data, along with some others, can be saved to a local file on a regular cycle so that in case of a Gateway restart this data can be re-loaded and continue to be useful. The standard times have been increased to reduce continual small updates to local disk.
+* Rule Startup Delay - 45 seconds
+  As the majority of the work is Rule processing and there is no data when the Gateway starts up, we delay the start of Rule processing by 45 seconds to give the Gateway plenty of time to make initial connections and so on. The 45 seconds is less than the default sample interval of 60 seconds, so Rules should be running before the first samples are taken.
+* No sample on start-up - False
+  Sampling on start-up has been set to false for all the samplers. Just like the Rule Startup Delay above, this gives the Gateway plenty of time to reach a stable, quiescent state.
+
+The choice of which samplers to use and the specific configuration of groupings has been made based on prior experience but there may be many other combinations of filters, grouping etc. on the Gateway Load plugins that would work better in your environment. We welcome feedback and additional proposals.
+
+Finally; Database Logging, while configured for very basic load monitoring, has not been given the detailed review that the other components have at this stage. Again, we welcome feedback and changes.
