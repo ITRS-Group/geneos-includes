@@ -3,9 +3,10 @@
 This page contains baseline Gateway include files for typical deployments and also seeks to establish sensible defaults.
 
 * [`common.xml`](common.xml)
-  The `common.xml` file contains:
-  * A set of standard global variables reflecting all the available `Macro` types which have the same names as their Macro type. They are described in the [documentation](https://docs.itrsgroup.com/docs/geneos/current/Gateway_Reference_Guide/gateway_user_variables_and_environments.htm#environments_environment_var_macro)
-  * Setting the number of [Rule Threads](https://docs.itrsgroup.com/docs/geneos/current/Gateway_Reference_Guide/gateway_operating_environment.htm#operatingEnvironment_numRuleEvaluationThreads) to 4, which is reasonable for most hosts.
+  This file contains:
+  * A set of standard global variables with all the available `Macro` types which have the same names as their Macro type. They are described in the [documentation](https://docs.itrsgroup.com/docs/geneos/current/Gateway_Reference_Guide/gateway_user_variables_and_environments.htm#environments_environment_var_macro)
+  * Setting the number of [Rule threads](https://docs.itrsgroup.com/docs/geneos/current/Gateway_Reference_Guide/gateway_operating_environment.htm#operatingEnvironment_numRuleEvaluationThreads) to 4, which is reasonable for most hosts.
+  * Setting the [DNS cache expiry time](https://docs.itrsgroup.com/docs/geneos/5.14.0/Gateway_Reference_Guide/gateway_operating_environment.htm#operatingEnvironment_dnsCacheExpiryTime) to 5 minutes rather than the default 12 hours, so that your Gateway will pick up changes to DNS in line with more typical TTLs.
 
 ## How to use
 
