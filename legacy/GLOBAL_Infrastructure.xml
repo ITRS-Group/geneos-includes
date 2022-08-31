@@ -1,0 +1,2472 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<!--Edited using Gateway Setup Editor version GA4.4.0-171005 at 2018-02-23 10:47:39 by gclandorf on GABRIELCLAN067B-->
+<gateway compatibility="1" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="http://schema.itrsgroup.com/GA4.1.0-170114/gateway.xsd">
+	<!-- Setup Template Version 20090202 -->
+	<types>
+		<typeGroup name="Global Inf">
+			<type name="Infrastructure Defaults">
+				<sampler ref="Hardware"/>
+				<sampler ref="CPU"/>
+				<sampler ref="Network"/>
+				<sampler ref="TOP-CPU"/>
+				<sampler disabled="false" ref="Geneos Processes"/>
+			</type>
+			<type name="Linux Defaults">
+				<!--When assigning this Type to a Managed Entity Group, the Unix Defaults environment should be assigned 
+to any Managed Enity being added to the ME Group-->
+				<sampler ref="Linux Disk"/>
+				<sampler ref="Unix Users"/>
+				<sampler ref="Device IO"/>
+				<sampler ref="TOP-Mem"/>
+				<sampler disabled="true" ref="IPC"/>
+			</type>
+			<type name="Solaris Defaults">
+				<!--When assigning this Type to a Managed Entity Group, the Unix Defaults environment should be assigned 
+to any Managed Enity being added to the ME Group-->
+				<sampler ref="Solaris Disk"/>
+				<sampler ref="Unix Users"/>
+				<sampler ref="Device IO"/>
+				<sampler ref="TOP-Mem"/>
+				<sampler disabled="true" ref="IPC"/>
+			</type>
+			<type name="Windows Defaults">
+				<!--When assigning this Type to a Managed Entity Group, the Windows Defaults environment should be assigned 
+to any Managed Enity being added to the ME Group-->
+				<sampler ref="Windows Services"/>
+				<sampler ref="Windows Disk"/>
+				<sampler ref="Windows Users"/>
+				<sampler ref="Windows Device IO"/>
+			</type>
+			<type disabled="true" name="Geneos Database">
+				<sampler ref="Geneos Database"/>
+			</type>
+		</typeGroup>
+		<typeGroup disabled="true" name="EMS">
+			<type name="EMS Monitoring">
+				<!--When assigning this Type to a Managed Entity for the first time, 
+the environment in the Advanced Tab should be removed and the
+environment associated with the Type directly in the Managed
+Enity or Managed Entity Group to which it is being added-->
+				<sampler disabled="false" ref="E4JMS Topics"/>
+				<sampler disabled="false" ref="E4JMS Server"/>
+				<sampler disabled="false" ref="E4JMS Connections"/>
+				<sampler ref="E4JMS Queues"/>
+				<sampler ref="E4JMS Bridges"/>
+				<sampler ref="E4JMS Durables"/>
+				<sampler ref="E4JMS Routes"/>
+			</type>
+		</typeGroup>
+		<typeGroup disabled="true" name="Java">
+			<type name="Basic JVM">
+				<!--When assigning this Type to a Managed Entity for the first time, 
+the environment in the Advanced Tab should be removed and the
+environment associated with the Type directly in the Managed
+Enity or Managed Entity Group to which it is being added
+
+This allows the Type to be re-used using different Environments-->
+				<sampler ref="JVM MemoryPool"/>
+				<sampler ref="JVM OperatingSystem"/>
+				<sampler ref="JVM Threading"/>
+				<sampler ref="JVM GarbageCollection"/>
+				<sampler ref="JVM Threads"/>
+				<sampler ref="JVM Memory"/>
+			</type>
+		</typeGroup>
+	</types>
+	<samplers>
+		<samplerGroup name="Global Inf">
+			<samplerGroup name="Infrastructure Defaults">
+				<sampler name="Hardware">
+					<var-group>
+						<data>Hardware</data>
+					</var-group>
+					<plugin>
+						<hardware>
+							<linux>
+								<includeBuffersAndCache>
+									<data>true</data>
+								</includeBuffersAndCache>
+							</linux>
+							<cpuSmoothing>
+								<data>true</data>
+							</cpuSmoothing>
+						</hardware>
+					</plugin>
+					<dataviews>
+						<dataview name="NT-HARDWARE">
+							<additions>
+								<var-rows>
+									<data>
+										<row>
+											<data>memoryUsedPercent</data>
+										</row>
+									</data>
+								</var-rows>
+							</additions>
+						</dataview>
+					</dataviews>
+				</sampler>
+				<sampler name="CPU">
+					<var-group>
+						<data>Hardware</data>
+					</var-group>
+					<plugin>
+						<cpu/>
+					</plugin>
+				</sampler>
+				<sampler name="Network">
+					<var-group>
+						<data>Hardware</data>
+					</var-group>
+					<plugin>
+						<network>
+							<showVirtualInterface>
+								<data>true</data>
+							</showVirtualInterface>
+							<showLoopback>
+								<data>false</data>
+							</showLoopback>
+							<showMBits>
+								<data>true</data>
+							</showMBits>
+							<showAbsolute>
+								<data>true</data>
+							</showAbsolute>
+							<showUnconfiguredNics>
+								<data>false</data>
+							</showUnconfiguredNics>
+						</network>
+					</plugin>
+				</sampler>
+				<sampler name="TOP-CPU">
+					<!-- You might want to change the threshold here -->
+					<var-group>
+						<data>System</data>
+					</var-group>
+					<plugin>
+						<top>
+							<threshold>
+								<var-thresholdParameter>
+									<data>pcpu</data>
+								</var-thresholdParameter>
+								<greaterThanOrEqualTo>10</greaterThanOrEqualTo>
+							</threshold>
+						</top>
+					</plugin>
+				</sampler>
+			</samplerGroup>
+			<samplerGroup name="Linux">
+				<sampler name="Linux Disk">
+					<var-group>
+						<data>Hardware</data>
+					</var-group>
+					<sampleInterval>
+						<data>60</data>
+					</sampleInterval>
+					<expectRows>
+						<data/>
+					</expectRows>
+					<plugin>
+						<disk>
+							<excludePartitions>
+								<excludePartition>
+									<path>/proc/*</path>
+								</excludePartition>
+								<excludePartition>
+									<path>/sys/*</path>
+								</excludePartition>
+								<excludePartition>
+									<path>/dev/pts</path>
+								</excludePartition>
+								<excludePartition>
+									<path>/cdrom/*</path>
+								</excludePartition>
+							</excludePartitions>
+							<autoDetect>
+								<data>true</data>
+							</autoDetect>
+							<checkNFSPartitions>
+								<data>false</data>
+							</checkNFSPartitions>
+						</disk>
+					</plugin>
+				</sampler>
+			</samplerGroup>
+			<samplerGroup name="Solaris">
+				<sampler name="Solaris Disk">
+					<var-group>
+						<data>Hardware</data>
+					</var-group>
+					<sampleInterval>
+						<data>60</data>
+					</sampleInterval>
+					<plugin>
+						<disk>
+							<excludePartitions>
+								<excludePartition>
+									<path>/cdrom/*</path>
+								</excludePartition>
+								<excludePartition>
+									<path>/dev/*</path>
+								</excludePartition>
+								<excludePartition>
+									<path>/devices</path>
+								</excludePartition>
+								<excludePartition>
+									<path>/net</path>
+								</excludePartition>
+								<excludePartition>
+									<path>/proc</path>
+								</excludePartition>
+								<excludePartition>
+									<path>/system/*</path>
+								</excludePartition>
+								<excludePartition>
+									<path>/etc/*</path>
+								</excludePartition>
+								<excludePartition>
+									<path>/lib/*</path>
+								</excludePartition>
+								<excludePartition>
+									<path>/vol</path>
+								</excludePartition>
+							</excludePartitions>
+							<autoDetect>
+								<data>true</data>
+							</autoDetect>
+							<checkNFSPartitions>
+								<data>false</data>
+							</checkNFSPartitions>
+						</disk>
+					</plugin>
+				</sampler>
+			</samplerGroup>
+			<samplerGroup name="Unix">
+				<sampler name="TOP-Mem">
+					<var-group>
+						<data>System</data>
+					</var-group>
+					<plugin>
+						<top>
+							<threshold>
+								<var-thresholdParameter>
+									<data>vsz</data>
+								</var-thresholdParameter>
+								<greaterThanOrEqualTo>2000000.0</greaterThanOrEqualTo>
+							</threshold>
+						</top>
+					</plugin>
+				</sampler>
+				<sampler name="Device IO">
+					<var-group>
+						<data>System</data>
+					</var-group>
+					<plugin>
+						<deviceio/>
+					</plugin>
+				</sampler>
+				<sampler name="Unix Users">
+					<var-group>
+						<data>System</data>
+					</var-group>
+					<plugin>
+						<unix-users/>
+					</plugin>
+				</sampler>
+				<sampler name="IPC">
+					<var-group>
+						<data>System</data>
+					</var-group>
+					<plugin>
+						<ipc>
+							<command>
+								<var ref="INF_IPCS_COMMAND"/>
+							</command>
+						</ipc>
+					</plugin>
+				</sampler>
+			</samplerGroup>
+			<samplerGroup name="Windows">
+				<sampler name="Windows Disk">
+					<var-group>
+						<data>Hardware</data>
+					</var-group>
+					<sampleInterval>
+						<data>60</data>
+					</sampleInterval>
+					<plugin>
+						<disk>
+							<excludePartitions>
+								<excludePartition>
+									<fileSystem>CDFS</fileSystem>
+								</excludePartition>
+								<excludePartition>
+									<fileSystem>UDF</fileSystem>
+								</excludePartition>
+								<excludePartition>
+									<path>/cdrom/*</path>
+								</excludePartition>
+							</excludePartitions>
+							<autoDetect>
+								<data>true</data>
+							</autoDetect>
+							<checkNFSPartitions>
+								<data>false</data>
+							</checkNFSPartitions>
+						</disk>
+					</plugin>
+				</sampler>
+				<sampler name="Windows Services">
+					<var-group>
+						<data>System</data>
+					</var-group>
+					<plugin>
+						<win-services>                                                     </win-services>
+					</plugin>
+				</sampler>
+				<sampler name="Windows Users">
+					<var-group>
+						<data>System</data>
+					</var-group>
+					<displayName>Users</displayName>
+					<hideRows>
+						<row>655.*</row>
+					</hideRows>
+					<plugin>
+						<wts-sessions/>
+					</plugin>
+					<dataviews>
+						<dataview name="WindowsUsers">
+							<displayName>Users</displayName>
+							<additions>
+								<headlines>
+									<headline>Total Users</headline>
+								</headlines>
+							</additions>
+						</dataview>
+					</dataviews>
+				</sampler>
+				<sampler name="Windows Device IO">
+					<var-group>
+						<data>System</data>
+					</var-group>
+					<plugin>
+						<perfmon>
+							<template>
+								<tableDefinition>
+									<objectID>
+										<data>LogicalDisk</data>
+									</objectID>
+									<instances>
+										<instance>
+											<data>*</data>
+										</instance>
+									</instances>
+									<counters>
+										<counter>
+											<name>
+												<data>Current Disk Queue Length</data>
+											</name>
+											<value>
+												<data>Current Disk Queue Length</data>
+											</value>
+										</counter>
+										<counter>
+											<name>
+												<data>Avg. Disk Queue Length</data>
+											</name>
+											<value>
+												<data>Avg. Disk Queue Length</data>
+											</value>
+										</counter>
+										<counter>
+											<name>
+												<data>Avg. Disk Read Queue Length</data>
+											</name>
+											<value>
+												<data>Avg. Disk Read Queue Length</data>
+											</value>
+										</counter>
+										<counter>
+											<name>
+												<data>Avg. Disk Write Queue Length</data>
+											</name>
+											<value>
+												<data>Avg. Disk Write Queue Length</data>
+											</value>
+										</counter>
+									</counters>
+								</tableDefinition>
+							</template>
+						</perfmon>
+					</plugin>
+				</sampler>
+			</samplerGroup>
+		</samplerGroup>
+		<samplerGroup disabled="true" name="EMS">
+			<sampler name="E4JMS Bridges">
+				<plugin>
+					<e4jms-bridges>
+						<singleHost>
+							<host>
+								<name>
+									<var ref="EMS_HOST"/>
+								</name>
+							</host>
+							<port>
+								<var ref="EMS_PORT"/>
+							</port>
+							<username>
+								<var ref="EMS_USER"/>
+							</username>
+							<password>
+								<var ref="EMS_PASSWORD"/>
+							</password>
+						</singleHost>
+					</e4jms-bridges>
+				</plugin>
+			</sampler>
+			<sampler name="E4JMS Connections">
+				<plugin>
+					<e4jms-connections>
+						<singleHost>
+							<host>
+								<name>
+									<var ref="EMS_HOST"/>
+								</name>
+							</host>
+							<port>
+								<var ref="EMS_PORT"/>
+							</port>
+							<username>
+								<var ref="EMS_USER"/>
+							</username>
+							<password>
+								<var ref="EMS_PASSWORD"/>
+							</password>
+						</singleHost>
+					</e4jms-connections>
+				</plugin>
+			</sampler>
+			<sampler name="E4JMS Durables">
+				<plugin>
+					<e4jms-durables>
+						<singleHost>
+							<host>
+								<name>
+									<var ref="EMS_HOST"/>
+								</name>
+							</host>
+							<port>
+								<var ref="EMS_PORT"/>
+							</port>
+							<username>
+								<var ref="EMS_USER"/>
+							</username>
+							<password>
+								<var ref="EMS_PASSWORD"/>
+							</password>
+						</singleHost>
+					</e4jms-durables>
+				</plugin>
+			</sampler>
+			<sampler name="E4JMS Queues">
+				<plugin>
+					<e4jms-queues>
+						<singleHost>
+							<host>
+								<name>
+									<var ref="EMS_HOST"/>
+								</name>
+							</host>
+							<port>
+								<var ref="EMS_PORT"/>
+							</port>
+							<username>
+								<var ref="EMS_USER"/>
+							</username>
+							<password>
+								<var ref="EMS_PASSWORD"/>
+							</password>
+						</singleHost>
+						<filters>
+							<filter>
+								<data>$</data>
+							</filter>
+							<filter>
+								<data>AMM</data>
+							</filter>
+						</filters>
+					</e4jms-queues>
+				</plugin>
+			</sampler>
+			<sampler name="E4JMS Routes">
+				<plugin>
+					<e4jms-routes>
+						<singleHost>
+							<host>
+								<name>
+									<var ref="EMS_HOST"/>
+								</name>
+							</host>
+							<port>
+								<var ref="EMS_PORT"/>
+							</port>
+							<username>
+								<var ref="EMS_USER"/>
+							</username>
+							<password>
+								<var ref="EMS_PASSWD"/>
+							</password>
+						</singleHost>
+					</e4jms-routes>
+				</plugin>
+			</sampler>
+			<sampler name="E4JMS Server">
+				<plugin>
+					<e4jms-server>
+						<singleHost>
+							<host>
+								<name>
+									<var ref="EMS_HOST"/>
+								</name>
+							</host>
+							<port>
+								<var ref="EMS_PORT"/>
+							</port>
+							<username>
+								<var ref="EMS_USER"/>
+							</username>
+							<password>
+								<var ref="EMS_PASSWD"/>
+							</password>
+						</singleHost>
+					</e4jms-server>
+				</plugin>
+			</sampler>
+			<sampler name="E4JMS Topics">
+				<plugin>
+					<e4jms-topics>
+						<singleHost>
+							<host>
+								<name>
+									<var ref="EMS_HOST"/>
+								</name>
+							</host>
+							<port>
+								<var ref="EMS_PORT"/>
+							</port>
+							<username>
+								<var ref="EMS_USER"/>
+							</username>
+							<password>
+								<var ref="EMS_PASSWORD"/>
+							</password>
+						</singleHost>
+						<filters>
+							<filter>
+								<data>&gt;</data>
+							</filter>
+							<filter>
+								<data>sample</data>
+							</filter>
+							<filter>
+								<data>topic.sample</data>
+							</filter>
+							<filter>
+								<data>topic.sample.exported</data>
+							</filter>
+							<filter>
+								<data>topic.sample.imported</data>
+							</filter>
+							<filter>
+								<var ref="EMS_TOPIC_FILTER"/>
+							</filter>
+						</filters>
+					</e4jms-topics>
+				</plugin>
+			</sampler>
+		</samplerGroup>
+		<samplerGroup name="Geneos">
+			<sampler name="Geneos Processes">
+				<var-group>
+					<data>Geneos</data>
+				</var-group>
+				<plugin>
+					<processes>
+						<processes>
+							<process>
+								<data>
+									<alias>
+										<data>Netprobe</data>
+									</alias>
+								</data>
+							</process>
+						</processes>
+					</processes>
+				</plugin>
+			</sampler>
+		</samplerGroup>
+		<samplerGroup name="Database">
+			<sampler disabled="true" name="Geneos Database">
+				<var-group>
+					<data>Database</data>
+				</var-group>
+				<sampleInterval>
+					<data>300</data>
+				</sampleInterval>
+				<hideColumns>
+					<column>Comment</column>
+					<column>Create_options</column>
+					<column>Checksum</column>
+					<column>Collation</column>
+					<column>Check_time</column>
+					<column>Create_time</column>
+					<column>Auto_increment</column>
+					<column>Data_free</column>
+					<column>Max_data_length</column>
+				</hideColumns>
+				<plugin>
+					<sql-toolkit>
+						<queries>
+							<query>
+								<name>
+									<data>TableStatus</data>
+								</name>
+								<sql>
+									<data>show table status</data>
+								</sql>
+							</query>
+							<query>
+								<name>
+									<data>ProcessList</data>
+								</name>
+								<sql>
+									<data>show full processlist</data>
+								</sql>
+							</query>
+						</queries>
+						<connection>
+							<database>
+								<mysql>
+									<var-serverName>
+										<data>mySQLServerName</data>
+									</var-serverName>
+									<var-databaseName>
+										<data>mySQLDatabaseName</data>
+									</var-databaseName>
+								</mysql>
+							</database>
+							<var-userName>
+								<data>mySQLUserName</data>
+							</var-userName>
+							<password>
+								<plaintext>mySQLpassword</plaintext>
+							</password>
+						</connection>
+						<showHeadlines>true</showHeadlines>
+					</sql-toolkit>
+				</plugin>
+			</sampler>
+		</samplerGroup>
+		<samplerGroup disabled="true" name="Basic JVM">
+			<sampler name="JVM MemoryPool">
+				<var-group>
+					<var ref="JavaApplicationName"/>
+				</var-group>
+				<displayName>JVM_Memory</displayName>
+				<sampleOnStartup>true</sampleOnStartup>
+				<plugin>
+					<jmx-server>
+						<connectionSettings>
+							<generic>
+								<connectionSetting>
+									<name>serviceURL</name>
+									<value>
+										<var ref="JMX_URL"/>
+									</value>
+								</connectionSetting>
+							</generic>
+						</connectionSettings>
+						<aliases>
+							<alias>
+								<name>$1</name>
+								<value>
+									<data>java.lang:type=MemoryPool,*</data>
+								</value>
+								<showCommands>
+									<headlines>true</headlines>
+									<tableColumns>true</tableColumns>
+									<dataviews>true</dataviews>
+									<samplers>true</samplers>
+								</showCommands>
+							</alias>
+						</aliases>
+						<columns>
+							<column>
+								<label>Name</label>
+								<rowTemplate>
+									<data>$1.Name</data>
+								</rowTemplate>
+							</column>
+							<column>
+								<label>Type</label>
+								<rowTemplate>
+									<data>$1.Type</data>
+								</rowTemplate>
+							</column>
+							<column>
+								<label>UsageCommitted</label>
+								<rowTemplate>
+									<data>($1.Usage.committed /1024) &apos;kb&apos;</data>
+								</rowTemplate>
+							</column>
+							<column>
+								<label>UsageInit</label>
+								<rowTemplate>
+									<data>($1.Usage.init /1024)&apos;kb&apos;</data>
+								</rowTemplate>
+							</column>
+							<column>
+								<label>UsageMax</label>
+								<rowTemplate>
+									<data>($1.Usage.max /1024) &apos;kb&apos;</data>
+								</rowTemplate>
+							</column>
+							<column>
+								<label>UsageUsed</label>
+								<rowTemplate>
+									<data>($1.Usage.used /1024) &apos;kb&apos;</data>
+								</rowTemplate>
+							</column>
+							<column>
+								<label>PercentageUsed</label>
+								<rowTemplate>
+									<data>($1.Usage.used /$1.Usage.max *100) &apos;%&apos;</data>
+								</rowTemplate>
+							</column>
+							<column>
+								<label>PeakUsageCommitted</label>
+								<rowTemplate>
+									<data>($1.PeakUsage.committed /1024) &apos;kb&apos;</data>
+								</rowTemplate>
+							</column>
+							<column>
+								<label>PeakUsageInit</label>
+								<rowTemplate>
+									<data>($1.PeakUsage.init /1024) &apos;kb&apos;</data>
+								</rowTemplate>
+							</column>
+							<column>
+								<label>PeakUsageMax</label>
+								<rowTemplate>
+									<data>($1.PeakUsage.max /1024) &apos;kb&apos;</data>
+								</rowTemplate>
+							</column>
+							<column>
+								<label>PeakUsageUsed</label>
+								<rowTemplate>
+									<data>($1.PeakUsage.used /1024)&apos;kb&apos;</data>
+								</rowTemplate>
+							</column>
+							<column>
+								<label>PercentagePeakUsage</label>
+								<rowTemplate>
+									<data>($1.PeakUsage.used /$1.PeakUsage.max *100) &apos;%&apos;</data>
+								</rowTemplate>
+							</column>
+							<column>
+								<label>CollectionUsageCommitted</label>
+								<rowTemplate>
+									<data>($1.CollectionUsage.committed / 1024) &apos;kb&apos;</data>
+								</rowTemplate>
+							</column>
+							<column>
+								<label>CollectionUsageInit</label>
+								<rowTemplate>
+									<data>($1.CollectionUsage.init / 1024) &apos;kb&apos;</data>
+								</rowTemplate>
+							</column>
+							<column>
+								<label>CollectionUsageMax</label>
+								<rowTemplate>
+									<data>($1.CollectionUsage.max / 1024) &apos;kb&apos;</data>
+								</rowTemplate>
+							</column>
+							<column>
+								<label>CollectionUsageUsed</label>
+								<rowTemplate>
+									<data>($1.CollectionUsage.used /1024)&apos;kb&apos;</data>
+								</rowTemplate>
+							</column>
+							<column>
+								<label>PercentageCollectionUsage</label>
+								<rowTemplate>
+									<data>($1.CollectionUsage.used / $1.CollectionUsage.max *100) &apos;%&apos;</data>
+								</rowTemplate>
+							</column>
+						</columns>
+						<idAttributes/>
+					</jmx-server>
+				</plugin>
+			</sampler>
+			<sampler name="JVM OperatingSystem">
+				<var-group>
+					<var ref="JavaApplicationName"/>
+				</var-group>
+				<displayName>OperatingSystem</displayName>
+				<sampleOnStartup>true</sampleOnStartup>
+				<plugin>
+					<jmx-server>
+						<connectionSettings>
+							<generic>
+								<connectionSetting>
+									<name>serviceURL</name>
+									<value>
+										<var ref="JMX_URL"/>
+									</value>
+								</connectionSetting>
+							</generic>
+						</connectionSettings>
+						<aliases>
+							<alias>
+								<name>$1</name>
+								<value>
+									<data>java.lang:type=OperatingSystem</data>
+								</value>
+								<showCommands>
+									<headlines>true</headlines>
+									<tableColumns>true</tableColumns>
+									<dataviews>true</dataviews>
+									<samplers>true</samplers>
+								</showCommands>
+							</alias>
+							<alias>
+								<name>$2</name>
+								<value>
+									<data>java.lang:type=Memory</data>
+								</value>
+								<showCommands>
+									<headlines>true</headlines>
+									<tableColumns>true</tableColumns>
+									<dataviews>true</dataviews>
+									<samplers>true</samplers>
+								</showCommands>
+							</alias>
+							<alias>
+								<name>$3</name>
+								<value>
+									<data>java.lang:type=Runtime</data>
+								</value>
+								<showCommands>
+									<headlines>true</headlines>
+									<tableColumns>true</tableColumns>
+									<dataviews>true</dataviews>
+									<samplers>true</samplers>
+								</showCommands>
+							</alias>
+						</aliases>
+						<rows>
+							<columnLabels>
+								<label>
+									<data>Attribute</data>
+								</label>
+								<label>
+									<data>Value</data>
+								</label>
+							</columnLabels>
+							<row>
+								<value>
+									<data>AvailableProcessors,$1.AvailableProcessors</data>
+								</value>
+								<value>
+									<data>$1.ClassPath</data>
+								</value>
+							</row>
+							<row>
+								<value>
+									<data>OperatingSystem,$1.Name</data>
+								</value>
+								<value>
+									<data>$4.Name</data>
+								</value>
+							</row>
+							<row>
+								<value>
+									<data>Architecture,$1.Arch</data>
+								</value>
+								<value>
+									<data>$4.Arch</data>
+								</value>
+							</row>
+							<row>
+								<value>
+									<data>Version,$1.Version</data>
+								</value>
+								<value>
+									<data>$4.Version</data>
+								</value>
+							</row>
+							<row>
+								<value>
+									<data>SystemLoadAverage,$1.SystemLoadAverage</data>
+								</value>
+							</row>
+							<row>
+								<value>
+									<data>HeapMemoryUsage,($2.HeapMemoryUsage.committed /1024/1024)&apos;Mb&apos;</data>
+								</value>
+							</row>
+							<row>
+								<value>
+									<data>NonHeapMemoryUsage,($2.NonHeapMemoryUsage.committed /1024/1024)&apos;Mb&apos;</data>
+								</value>
+							</row>
+							<row>
+								<value>
+									<data>FreePhysicalMemory, ($1.FreePhysicalMemorySize /1024/1024)&apos;Mb&apos;</data>
+								</value>
+							</row>
+							<row>
+								<value>
+									<data>TotalPhysicalMemory, ($1.TotalPhysicalMemorySize /1024/1024)&apos;Mb&apos;</data>
+								</value>
+							</row>
+							<row>
+								<value>
+									<data>CommittedVirtualMemory, ($1.CommittedVirtualMemorySize /1024/1024)&apos;Mb&apos;</data>
+								</value>
+							</row>
+							<row>
+								<value>
+									<data>FreeSwapSpace, ($1.FreeSwapSpaceSize /1024/1024)&apos;Mb&apos;</data>
+								</value>
+							</row>
+							<row>
+								<value>
+									<data>TotalSwapSpace, ($1.TotalSwapSpaceSize /1024/1024)&apos;Mb&apos;</data>
+								</value>
+							</row>
+							<row>
+								<value>
+									<data>ProcessCpuTime, ($1.ProcessCpuTime /1000/1000/1000/60)&apos;minutes&apos;</data>
+								</value>
+							</row>
+							<row>
+								<value>
+									<data>JVM Process Uptime,  ($3.Uptime /1000/60/60)&apos;hours&apos;</data>
+								</value>
+							</row>
+							<row>
+								<value>
+									<data>JVM Implementation Name, $3.VmName</data>
+								</value>
+							</row>
+							<row>
+								<value>
+									<data>JVM Implementation Vendor, $3.VmVendor</data>
+								</value>
+							</row>
+							<row>
+								<value>
+									<data>JVM Version, $3.VmVersion</data>
+								</value>
+							</row>
+							<row>
+								<value>
+									<data>LibraryPath, $3.LibraryPath</data>
+								</value>
+							</row>
+						</rows>
+						<idAttributes/>
+					</jmx-server>
+				</plugin>
+			</sampler>
+			<sampler name="JVM Threading">
+				<var-group>
+					<var ref="JavaApplicationName"/>
+				</var-group>
+				<displayName>OperatingSystem</displayName>
+				<sampleOnStartup>true</sampleOnStartup>
+				<plugin>
+					<jmx-server>
+						<connectionSettings>
+							<generic>
+								<connectionSetting>
+									<name>serviceURL</name>
+									<value>
+										<var ref="JMX_URL"/>
+									</value>
+								</connectionSetting>
+							</generic>
+						</connectionSettings>
+						<aliases>
+							<alias>
+								<name>$1</name>
+								<value>
+									<data>java.lang:type=Threading</data>
+								</value>
+								<showCommands>
+									<headlines>true</headlines>
+									<tableColumns>true</tableColumns>
+									<dataviews>true</dataviews>
+									<samplers>true</samplers>
+								</showCommands>
+							</alias>
+						</aliases>
+						<rows>
+							<columnLabels>
+								<label>
+									<data>Attribute</data>
+								</label>
+								<label>
+									<data>Value</data>
+								</label>
+							</columnLabels>
+							<row>
+								<value>
+									<data>DaemonThreadCount,$1.DaemonThreadCount</data>
+								</value>
+								<value>
+									<data>$1.ClassPath</data>
+								</value>
+							</row>
+							<row>
+								<value>
+									<data>PeakThreadCount,$1.PeakThreadCount</data>
+								</value>
+								<value>
+									<data>$1.LibraryPath</data>
+								</value>
+							</row>
+							<row>
+								<value>
+									<data>CurrentThreadCpuTime, ($1.CurrentThreadCpuTime  / 1000/1000)&apos;millisecs&apos;</data>
+								</value>
+								<value>
+									<data>$3.Verbose</data>
+								</value>
+							</row>
+							<row>
+								<value>
+									<data>CurrentThreadUserTime,($1.CurrentThreadUserTime / 1000/1000)&apos;millisecs&apos;</data>
+								</value>
+								<value>
+									<data>$4.Name</data>
+								</value>
+							</row>
+							<row>
+								<value>
+									<data>ThreadCount,$1.ThreadCount</data>
+								</value>
+								<value>
+									<data>$4.Arch</data>
+								</value>
+							</row>
+							<row>
+								<value>
+									<data>TotalStartedThreadCount,$1.TotalStartedThreadCount</data>
+								</value>
+								<value>
+									<data>$4.Version</data>
+								</value>
+							</row>
+						</rows>
+						<idAttributes/>
+					</jmx-server>
+				</plugin>
+			</sampler>
+			<sampler name="JVM GarbageCollection">
+				<var-group>
+					<var ref="JavaApplicationName"/>
+				</var-group>
+				<displayName>GarbageCollection</displayName>
+				<sampleOnStartup>true</sampleOnStartup>
+				<plugin>
+					<jmx-server>
+						<connectionSettings>
+							<generic>
+								<connectionSetting>
+									<name>serviceURL</name>
+									<value>
+										<var ref="JMX_URL"/>
+									</value>
+								</connectionSetting>
+							</generic>
+						</connectionSettings>
+						<aliases>
+							<alias>
+								<name>$1</name>
+								<value>
+									<data>java.lang:type=GarbageCollector,*</data>
+								</value>
+								<showCommands>
+									<headlines>true</headlines>
+									<tableColumns>true</tableColumns>
+									<dataviews>true</dataviews>
+									<samplers>true</samplers>
+								</showCommands>
+							</alias>
+						</aliases>
+						<columns>
+							<column>
+								<label>Name</label>
+								<rowTemplate>
+									<data>$1.Name</data>
+								</rowTemplate>
+							</column>
+							<column>
+								<label>Valid</label>
+								<rowTemplate>
+									<data>$1.Valid</data>
+								</rowTemplate>
+							</column>
+							<column>
+								<label>CollectionCount</label>
+								<rowTemplate>
+									<data>$1.CollectionCount</data>
+								</rowTemplate>
+							</column>
+							<column>
+								<label>CollectionTime</label>
+								<rowTemplate>
+									<data>($1.CollectionTime / 1000)&apos;secs&apos;</data>
+								</rowTemplate>
+							</column>
+						</columns>
+						<idAttributes/>
+					</jmx-server>
+				</plugin>
+			</sampler>
+			<sampler name="JVM Threads">
+				<var-group>
+					<var ref="JavaApplicationName"/>
+				</var-group>
+				<plugin>
+					<jmx-threadinfo>
+						<connectionSettings>
+							<connectionSetting>
+								<name>serviceURL</name>
+								<var-value>
+									<var ref="JMX_URL"/>
+								</var-value>
+							</connectionSetting>
+						</connectionSettings>
+					</jmx-threadinfo>
+				</plugin>
+				<dataviews>
+					<dataview name="Threads">
+						<additions>
+							<columns>
+								<column>threadCpuTimeSec</column>
+								<column>threadUserTimeSec</column>
+								<column>myThreadName</column>
+							</columns>
+						</additions>
+					</dataview>
+				</dataviews>
+			</sampler>
+			<sampler disabled="true" name="JVM Memory">
+				<var-group>
+					<var ref="JavaApplicationName"/>
+				</var-group>
+				<displayName>JVM_Memory</displayName>
+				<sampleOnStartup>true</sampleOnStartup>
+				<plugin>
+					<jmx-server>
+						<connectionSettings>
+							<generic>
+								<connectionSetting>
+									<name>serviceURL</name>
+									<value>
+										<var ref="JMX_URL"/>
+									</value>
+								</connectionSetting>
+							</generic>
+						</connectionSettings>
+						<aliases>
+							<alias>
+								<name>$1</name>
+								<value>
+									<data>java.lang:type=Memory</data>
+								</value>
+								<showCommands>
+									<headlines>true</headlines>
+									<tableColumns>true</tableColumns>
+									<dataviews>true</dataviews>
+									<samplers>true</samplers>
+								</showCommands>
+							</alias>
+						</aliases>
+						<columns>
+							<column>
+								<label>HeapMemoryUsageCommitted</label>
+								<rowTemplate>
+									<data>($1.HeapMemoryUsage.committed /1024) &apos;kb&apos;</data>
+								</rowTemplate>
+							</column>
+							<column>
+								<label>HeapMemoryUsageInit</label>
+								<rowTemplate>
+									<data>($1.HeapMemoryUsage.init /1024)&apos;kb&apos;</data>
+								</rowTemplate>
+							</column>
+							<column>
+								<label>HeapMemoryUsageMax</label>
+								<rowTemplate>
+									<data>($1.HeapMemoryUsage.max /1024) &apos;kb&apos;</data>
+								</rowTemplate>
+							</column>
+							<column>
+								<label>HeapMemoryUsageUsed</label>
+								<rowTemplate>
+									<data>($1.HeapMemoryUsage.used /1024) &apos;kb&apos;</data>
+								</rowTemplate>
+							</column>
+							<column>
+								<label>NonHeapMemoryUsageCommitted</label>
+								<rowTemplate>
+									<data>($1.NonHeapMemoryUsage.committed /1024) &apos;kb&apos;</data>
+								</rowTemplate>
+							</column>
+							<column>
+								<label>NonHeapMemoryUsageInit</label>
+								<rowTemplate>
+									<data>($1.NonHeapMemoryUsage.init /1024)&apos;kb&apos;</data>
+								</rowTemplate>
+							</column>
+							<column>
+								<label>NonHeapMemoryUsageMax</label>
+								<rowTemplate>
+									<data>($1.NonHeapMemoryUsage.max /1024) &apos;kb&apos;</data>
+								</rowTemplate>
+							</column>
+							<column>
+								<label>NonHeapMemoryUsageUsed</label>
+								<rowTemplate>
+									<data>($1.NonHeapMemoryUsage.used /1024) &apos;kb&apos;</data>
+								</rowTemplate>
+							</column>
+						</columns>
+						<idAttributes/>
+					</jmx-server>
+				</plugin>
+				<dataviews>
+					<dataview name="">
+						<firstColumn>
+							<create>
+								<columnName/>
+								<combineColumns>
+									<column/>
+								</combineColumns>
+							</create>
+						</firstColumn>
+					</dataview>
+				</dataviews>
+			</sampler>
+		</samplerGroup>
+	</samplers>
+	<samplerIncludes>
+		<samplerInclude name="Gateway Process">
+			<sampler ref="Geneos Processes"/>
+			<plugin>
+				<processes>
+					<processes>
+						<process>
+							<processDescriptor ref="Gateway"/>
+						</process>
+					</processes>
+				</processes>
+			</plugin>
+		</samplerInclude>
+	</samplerIncludes>
+	<effects>
+		<effect name="Default Email">
+			<sharedLibrary>
+				<libraryFile>libemail.so</libraryFile>
+				<functionName>SendMail</functionName>
+				<runThreaded>true</runThreaded>
+				<staticParameters>
+					<staticParameter>
+						<name>_SMTP_SERVER</name>
+						<value>
+							<data>name.server.uk.lan</data>
+						</value>
+					</staticParameter>
+					<staticParameter>
+						<name>_FROM_ADDR</name>
+						<value>
+							<data>geneos@company.co.uk</data>
+						</value>
+					</staticParameter>
+					<staticParameter>
+						<name>_FROM_NAME</name>
+						<value>
+							<data>Geneos Monitoring</data>
+						</value>
+					</staticParameter>
+					<staticParameter>
+						<name>_SUBJECT</name>
+						<value>
+							<data>%(_SEVERITY) ALERT ON  %(_MANAGED_ENTITY)  FROM %(_VARIABLE)</data>
+						</value>
+					</staticParameter>
+					<staticParameter>
+						<name>_ALERT_FORMAT</name>
+						<value>
+							<data>***This is an auto-generated message from Geneos
+***
+
+Server    : %(_MANAGED_ENTITY)
+Probe Name    : %(_PROBE)
+Plug-in    : %(_DATAVIEW)
+Hostname or IP address: %(_NETPROBE_HOST) 
+Severity Level:  %(_SEVERITY) 
+Variable being monitored:  %(_VARIABLE) Triggered at value:  %(_VALUE)
+
+</data>
+						</value>
+					</staticParameter>
+				</staticParameters>
+			</sharedLibrary>
+		</effect>
+	</effects>
+	<rules>
+		<ruleGroup name="GLOBAL Infrastructure">
+			<default name="GLOBAL Infrastructure Default">
+				<rule>
+					<priorityGroup>10000</priorityGroup>
+				</rule>
+			</default>
+			<ruleGroup name="CPU">
+				<rule name="GBL-Inf-CPU On line">
+					<targets>
+						<target>/geneos/gateway/directory/probe/managedEntity/sampler[(@name=&quot;CPU&quot;)]/dataview/rows/row/cell[(@column=&quot;state&quot;)]</target>
+					</targets>
+					<priority>1</priority>
+					<activeStateAffectsCell>false</activeStateAffectsCell>
+					<block>
+						<if>
+							<like>
+								<dataItem>
+									<property>@value</property>
+								</dataItem>
+								<string/>
+							</like>
+							<transaction>
+								<update>
+									<property>state/@severity</property>
+									<severity>undefined</severity>
+								</update>
+							</transaction>
+							<if>
+								<unlike>
+									<dataItem>
+										<property>@value</property>
+									</dataItem>
+									<string>on-line</string>
+								</unlike>
+								<transaction>
+									<update>
+										<property>state/@severity</property>
+										<severity>critical</severity>
+									</update>
+								</transaction>
+								<transaction>
+									<update>
+										<property>state/@severity</property>
+										<severity>ok</severity>
+									</update>
+								</transaction>
+							</if>
+						</if>
+					</block>
+				</rule>
+				<rule name="GBL-Inf-TOP Top">
+					<targets>
+						<target>/geneos/gateway[(@name=&quot;UK_GWAdmin_Inf_LDN_P01&quot;)]/directory/probe/managedEntity/sampler[(@name=&quot;TOP-CPU&quot;)][(@type=&quot;Infrastructure Defaults&quot;)]/dataview[(@name=&quot;TOP-CPU&quot;)]/headlines/cell[(@name=&quot;numBreached&quot;)]</target>
+					</targets>
+					<priority>1</priority>
+					<block>
+						<if>
+							<gt>
+								<dataItem>
+									<property>@value</property>
+								</dataItem>
+								<integer>999999</integer>
+							</gt>
+							<transaction>
+								<update>
+									<property>state/@severity</property>
+									<severity>critical</severity>
+								</update>
+							</transaction>
+							<if>
+								<gt>
+									<dataItem>
+										<property>@value</property>
+									</dataItem>
+									<integer>10</integer>
+								</gt>
+								<transaction>
+									<update>
+										<property>state/@severity</property>
+										<severity>warning</severity>
+									</update>
+								</transaction>
+								<transaction>
+									<update>
+										<property>state/@severity</property>
+										<severity>ok</severity>
+									</update>
+								</transaction>
+							</if>
+						</if>
+					</block>
+				</rule>
+				<rule name="GBL-Inf-CPU Utilisation">
+					<targets>
+						<target>/geneos/gateway/directory/probe/managedEntity/sampler[(@type=&quot;Infrastructure Defaults&quot;)][(param(&quot;PluginName&quot;)=&quot;CPU&quot;)]/dataview/rows/row[(@name=&quot;Average_cpu&quot;)]/cell[(@column=&quot;percentUtilisation&quot;)]</target>
+						<target>/geneos/gateway/directory/probe/managedEntity/sampler[(@name=&quot;CPU&quot;)][(@type=&quot;Infrastructure Defaults&quot;)]/dataview/rows/row[(@name=&quot;_Total&quot;)]/cell[(@column=&quot;%processorTime&quot;)]</target>
+						<target>/geneos/gateway/directory/probe/managedEntity/sampler[(param(&quot;PluginName&quot;)=&quot;HARDWARE&quot;)]/dataview/rows/row[(@name=&quot;cpuUtilisation&quot;)]/cell[(@column=&quot;Value&quot;)]</target>
+					</targets>
+					<priority>1</priority>
+					<block>
+						<if>
+							<gt>
+								<dataItem>
+									<property>@value</property>
+								</dataItem>
+								<integer>100</integer>
+							</gt>
+							<transaction>
+								<delay>120</delay>
+								<update>
+									<property>state/@severity</property>
+									<severity>critical</severity>
+								</update>
+							</transaction>
+							<if>
+								<gt>
+									<dataItem>
+										<property>@value</property>
+									</dataItem>
+									<integer>80</integer>
+								</gt>
+								<transaction>
+									<delay>120</delay>
+									<update>
+										<property>state/@severity</property>
+										<severity>warning</severity>
+									</update>
+								</transaction>
+								<transaction>
+									<update>
+										<property>state/@severity</property>
+										<severity>ok</severity>
+									</update>
+								</transaction>
+							</if>
+						</if>
+					</block>
+				</rule>
+			</ruleGroup>
+			<ruleGroup name="Disk">
+				<rule name="GBL-Inf-Percentage Used">
+					<targets>
+						<target>/geneos/gateway/directory/probe/managedEntity/sampler[(param(&quot;PluginName&quot;)=&quot;DISK&quot;)]/dataview/rows/row/cell[(@column=&quot;percentageUsed&quot;)]</target>
+					</targets>
+					<priority>40</priority>
+					<activeStateAffectsCell>false</activeStateAffectsCell>
+					<pathAliases>
+						<pathAlias name="freespace">parent::node()/cell[(@column=&quot;freeSpace&quot;)]</pathAlias>
+						<pathAlias name="totalspace">parent::node()/cell[(@column=&quot;totalSpace&quot;)]</pathAlias>
+					</pathAliases>
+					<block>
+						<set>
+							<var ref="FS"/>
+							<dataItem>
+								<pathAlias ref="freespace"/>
+								<property>@value</property>
+							</dataItem>
+						</set>
+						<set>
+							<var ref="TS"/>
+							<dataItem>
+								<pathAlias ref="totalspace"/>
+								<property>@value</property>
+							</dataItem>
+						</set>
+						<if>
+							<and>
+								<equal>
+									<var ref="FS"/>
+									<integer>0</integer>
+								</equal>
+								<equal>
+									<var ref="TS"/>
+									<integer>0</integer>
+								</equal>
+							</and>
+							<transaction>
+								<update>
+									<property>state/@severity</property>
+									<severity>undefined</severity>
+								</update>
+							</transaction>
+							<if>
+								<and>
+									<gt>
+										<dataItem>
+											<property>@value</property>
+										</dataItem>
+										<integer>90</integer>
+									</gt>
+									<lt>
+										<var ref="FS"/>
+										<integer>10000</integer>
+									</lt>
+								</and>
+								<transaction>
+									<update>
+										<property>state/@severity</property>
+										<severity>critical</severity>
+									</update>
+								</transaction>
+								<if>
+									<and>
+										<gt>
+											<dataItem>
+												<property>@value</property>
+											</dataItem>
+											<integer>85</integer>
+										</gt>
+										<lt>
+											<var ref="FS"/>
+											<integer>10000</integer>
+										</lt>
+									</and>
+									<transaction>
+										<update>
+											<property>state/@severity</property>
+											<severity>warning</severity>
+										</update>
+									</transaction>
+									<if>
+										<and>
+											<gt>
+												<dataItem>
+													<property>@value</property>
+												</dataItem>
+												<integer>80</integer>
+											</gt>
+											<lt>
+												<var ref="FS"/>
+												<integer>20000</integer>
+											</lt>
+										</and>
+										<transaction>
+											<update>
+												<property>state/@severity</property>
+												<severity>warning</severity>
+											</update>
+										</transaction>
+										<transaction>
+											<update>
+												<property>state/@severity</property>
+												<severity>ok</severity>
+											</update>
+										</transaction>
+									</if>
+								</if>
+							</if>
+						</if>
+					</block>
+				</rule>
+			</ruleGroup>
+			<ruleGroup name="Hardware">
+				<rule name="GBL-Inf-Zombie Process">
+					<targets>
+						<target>/geneos/gateway/directory/probe/managedEntity/sampler[(param(&quot;PluginName&quot;)=&quot;HARDWARE&quot;)]/dataview/rows/row[(@name=&quot;zombieProcesses&quot;)]/cell[(@column=&quot;Value&quot;)]</target>
+					</targets>
+					<priority>1</priority>
+					<activeStateAffectsCell>false</activeStateAffectsCell>
+					<block>
+						<if>
+							<equal>
+								<dataItem>
+									<property>@value</property>
+								</dataItem>
+								<string/>
+							</equal>
+							<transaction>
+								<update>
+									<property>state/@severity</property>
+									<severity>undefined</severity>
+								</update>
+							</transaction>
+						</if>
+						<if>
+							<gt>
+								<dataItem>
+									<property>@value</property>
+								</dataItem>
+								<integer>999999</integer>
+							</gt>
+							<transaction>
+								<delay>120</delay>
+								<update>
+									<property>state/@severity</property>
+									<severity>critical</severity>
+								</update>
+							</transaction>
+							<if>
+								<gt>
+									<dataItem>
+										<property>@value</property>
+									</dataItem>
+									<integer>10</integer>
+								</gt>
+								<transaction>
+									<delay>120</delay>
+									<update>
+										<property>state/@severity</property>
+										<severity>warning</severity>
+									</update>
+								</transaction>
+								<transaction>
+									<update>
+										<property>state/@severity</property>
+										<severity>ok</severity>
+									</update>
+								</transaction>
+							</if>
+						</if>
+					</block>
+				</rule>
+				<rule name="GBL-Inf-Memory Used Percent">
+					<targets>
+						<target>/geneos/gateway/directory/probe/managedEntity/sampler[(@name=&quot;Hardware&quot;)][(@type=&quot;Infrastructure Defaults&quot;)]/dataview[(@name=&quot;NT-HARDWARE&quot;)]/rows/row[(@name=&quot;memoryUsedPercent&quot;)]/cell[(@column=&quot;Value&quot;)]</target>
+					</targets>
+					<priority>1</priority>
+					<pathAliases>
+						<pathAlias name="memTotal">../../row[(@name=&quot;totalPhysicalMemory&quot;)]/cell[(@column=&quot;Value&quot;)]</pathAlias>
+						<pathAlias name="memUsed">../../row[(@name=&quot;memoryUse&quot;)]/cell[(@column=&quot;Value&quot;)]</pathAlias>
+						<pathAlias name="memCached">../../row[(@name=&quot;memoryCached&quot;)]/cell[(@column=&quot;Value&quot;)]</pathAlias>
+					</pathAliases>
+					<block>
+						<transaction>
+							<update>
+								<property>@value</property>
+								<format>
+									<string>%.0f %%</string>
+									<multiply>
+										<divide>
+											<subtract>
+												<dataItem>
+													<pathAlias ref="memUsed"/>
+													<property>@value</property>
+												</dataItem>
+												<dataItem>
+													<pathAlias ref="memCached"/>
+													<property>@value</property>
+												</dataItem>
+											</subtract>
+											<dataItem>
+												<pathAlias ref="memTotal"/>
+												<property>@value</property>
+											</dataItem>
+										</divide>
+										<integer>100</integer>
+									</multiply>
+								</format>
+							</update>
+						</transaction>
+						<if>
+							<equal>
+								<dataItem>
+									<property>@value</property>
+								</dataItem>
+								<string/>
+							</equal>
+							<transaction>
+								<update>
+									<property>state/@severity</property>
+									<severity>undefined</severity>
+								</update>
+							</transaction>
+						</if>
+						<if>
+							<gt>
+								<dataItem>
+									<property>@value</property>
+								</dataItem>
+								<integer>999999</integer>
+							</gt>
+							<transaction>
+								<delay>120</delay>
+								<update>
+									<property>state/@severity</property>
+									<severity>critical</severity>
+								</update>
+							</transaction>
+							<if>
+								<gt>
+									<dataItem>
+										<property>@value</property>
+									</dataItem>
+									<integer>75</integer>
+								</gt>
+								<transaction>
+									<delay>120</delay>
+									<update>
+										<property>state/@severity</property>
+										<severity>warning</severity>
+									</update>
+								</transaction>
+								<transaction>
+									<update>
+										<property>state/@severity</property>
+										<severity>ok</severity>
+									</update>
+								</transaction>
+							</if>
+						</if>
+					</block>
+				</rule>
+				<rule name="GBL-Inf-Swap Used">
+					<targets>
+						<target>/geneos/gateway/directory/probe/managedEntity/sampler[(param(&quot;PluginName&quot;)=&quot;HARDWARE&quot;)]/dataview/rows/row[(@name=&quot;swapUsed&quot;)]/cell[(@column=&quot;Value&quot;)]</target>
+					</targets>
+					<priority>1</priority>
+					<activeStateAffectsCell>false</activeStateAffectsCell>
+					<block>
+						<if>
+							<gt>
+								<dataItem>
+									<property>@value</property>
+								</dataItem>
+								<integer>999999</integer>
+							</gt>
+							<transaction>
+								<delay>120</delay>
+								<update>
+									<property>state/@severity</property>
+									<severity>critical</severity>
+								</update>
+							</transaction>
+							<if>
+								<gt>
+									<dataItem>
+										<property>@value</property>
+									</dataItem>
+									<integer>90</integer>
+								</gt>
+								<transaction>
+									<delay>120</delay>
+									<update>
+										<property>state/@severity</property>
+										<severity>warning</severity>
+									</update>
+								</transaction>
+								<transaction>
+									<update>
+										<property>state/@severity</property>
+										<severity>ok</severity>
+									</update>
+								</transaction>
+							</if>
+						</if>
+					</block>
+				</rule>
+				<rule name="GBL-Inf-Memory Idle">
+					<targets>
+						<target>/geneos/gateway/directory/probe/managedEntity/sampler[(param(&quot;PluginName&quot;)=&quot;HARDWARE&quot;)]/dataview/rows/row[(@name=&quot;memoryIdle&quot;)]/cell[(@column=&quot;Value&quot;)]</target>
+					</targets>
+					<priority>1</priority>
+					<activeStateAffectsCell>false</activeStateAffectsCell>
+					<block>
+						<if>
+							<lt>
+								<dataItem>
+									<property>@value</property>
+								</dataItem>
+								<integer>1</integer>
+							</lt>
+							<transaction>
+								<delay>120</delay>
+								<update>
+									<property>state/@severity</property>
+									<severity>critical</severity>
+								</update>
+							</transaction>
+							<if>
+								<lt>
+									<dataItem>
+										<property>@value</property>
+									</dataItem>
+									<integer>200</integer>
+								</lt>
+								<transaction>
+									<delay>120</delay>
+									<update>
+										<property>state/@severity</property>
+										<severity>warning</severity>
+									</update>
+								</transaction>
+								<transaction>
+									<update>
+										<property>state/@severity</property>
+										<severity>ok</severity>
+									</update>
+								</transaction>
+							</if>
+						</if>
+					</block>
+				</rule>
+				<rule name="GBL-Inf-Paging">
+					<targets>
+						<target>/geneos/gateway/directory/probe/managedEntity[(attr(&quot;OS&quot;)=&quot;SOLARIS&quot;)]/sampler[(@name=&quot;hardware&quot;)][(@type=&quot;Infrastructure Defaults&quot;)]/dataview/rows/row[(@name=&quot;paging&quot;)]/cell[(@column=&quot;Value&quot;)]</target>
+					</targets>
+					<priority>1</priority>
+					<block>
+						<if>
+							<gt>
+								<dataItem>
+									<property>@value</property>
+								</dataItem>
+								<integer>999999</integer>
+							</gt>
+							<transaction>
+								<update>
+									<property>state/@severity</property>
+									<severity>critical</severity>
+								</update>
+							</transaction>
+							<transaction>
+								<update>
+									<property>state/@severity</property>
+									<severity>ok</severity>
+								</update>
+							</transaction>
+						</if>
+					</block>
+				</rule>
+			</ruleGroup>
+			<ruleGroup name="Network">
+				<rule name="GBL-Inf-Network Status Unix">
+					<targets>
+						<target>/geneos/gateway/directory/probe/managedEntity/sampler[(param(&quot;PluginName&quot;)=&quot;NETWORK&quot;)]/dataview/rows/row/cell[(@column=&quot;status&quot;)]</target>
+					</targets>
+					<priority>1</priority>
+					<activeStateAffectsCell>false</activeStateAffectsCell>
+					<block>
+						<if>
+							<equal>
+								<dataItem>
+									<property>@value</property>
+								</dataItem>
+								<string/>
+							</equal>
+							<transaction>
+								<update>
+									<property>state/@severity</property>
+									<severity>undefined</severity>
+								</update>
+							</transaction>
+						</if>
+						<if>
+							<equal>
+								<dataItem>
+									<property>@value</property>
+								</dataItem>
+								<string>DOWN</string>
+							</equal>
+							<transaction>
+								<update>
+									<property>state/@severity</property>
+									<severity>critical</severity>
+								</update>
+							</transaction>
+							<transaction>
+								<update>
+									<property>state/@severity</property>
+									<severity>ok</severity>
+								</update>
+							</transaction>
+						</if>
+					</block>
+				</rule>
+				<rule name="GBL-Inf-Network Status Windows">
+					<targets>
+						<target>/geneos/gateway/directory/probe/managedEntity/sampler[(@name=&quot;Network&quot;)][(@type=&quot;Infrastructure Defaults&quot;)]/dataview[(@name=&quot;NT-NETWORK&quot;)]/headlines/cell[(@name=&quot;tcpRetransmissionRate&quot;)]</target>
+					</targets>
+					<priority>1</priority>
+					<block>
+						<if>
+							<gt>
+								<dataItem>
+									<property>@value</property>
+								</dataItem>
+								<integer>999999</integer>
+							</gt>
+							<transaction>
+								<update>
+									<property>state/@severity</property>
+									<severity>critical</severity>
+								</update>
+							</transaction>
+							<if>
+								<gt>
+									<dataItem>
+										<property>@value</property>
+									</dataItem>
+									<integer>20</integer>
+								</gt>
+								<transaction>
+									<update>
+										<property>state/@severity</property>
+										<severity>warning</severity>
+									</update>
+								</transaction>
+								<transaction>
+									<update>
+										<property>state/@severity</property>
+										<severity>ok</severity>
+									</update>
+								</transaction>
+							</if>
+						</if>
+					</block>
+				</rule>
+			</ruleGroup>
+			<ruleGroup name="TOP">
+				<rule name="GBL-Inf TOP Mem">
+					<targets>
+						<target>/geneos/gateway/directory/probe/managedEntity/sampler[(@name=&quot;TOP-Mem&quot;)]/dataview[(@name=&quot;TOP-Mem&quot;)]/headlines/cell[(@name=&quot;numBreached&quot;)]</target>
+					</targets>
+					<priority>1</priority>
+					<block>
+						<if>
+							<gt>
+								<dataItem>
+									<property>@value</property>
+								</dataItem>
+								<integer>999999</integer>
+							</gt>
+							<transaction>
+								<update>
+									<property>state/@severity</property>
+									<severity>critical</severity>
+								</update>
+							</transaction>
+							<if>
+								<gt>
+									<dataItem>
+										<property>@value</property>
+									</dataItem>
+									<integer>5</integer>
+								</gt>
+								<transaction>
+									<update>
+										<property>state/@severity</property>
+										<severity>warning</severity>
+									</update>
+								</transaction>
+								<transaction>
+									<update>
+										<property>state/@severity</property>
+										<severity>ok</severity>
+									</update>
+								</transaction>
+							</if>
+						</if>
+					</block>
+				</rule>
+				<rule name="GBL-Inf TOP CPU">
+					<targets>
+						<target>/geneos/gateway/directory/probe/managedEntity/sampler[(@name=&quot;TOP-CPU&quot;)]/dataview[(@name=&quot;TOP-CPU&quot;)]/headlines/cell[(@name=&quot;numBreached&quot;)]</target>
+					</targets>
+					<priority>1</priority>
+					<block>
+						<if>
+							<gt>
+								<dataItem>
+									<property>@value</property>
+								</dataItem>
+								<integer>999999</integer>
+							</gt>
+							<transaction>
+								<update>
+									<property>state/@severity</property>
+									<severity>critical</severity>
+								</update>
+							</transaction>
+							<if>
+								<gt>
+									<dataItem>
+										<property>@value</property>
+									</dataItem>
+									<integer>10</integer>
+								</gt>
+								<transaction>
+									<update>
+										<property>state/@severity</property>
+										<severity>warning</severity>
+									</update>
+								</transaction>
+								<transaction>
+									<update>
+										<property>state/@severity</property>
+										<severity>ok</severity>
+									</update>
+								</transaction>
+							</if>
+						</if>
+					</block>
+				</rule>
+			</ruleGroup>
+			<ruleGroup name="Services">
+				<rule disabled="true" name="GBL-Inf Windows Services">
+					<targets>
+						<target>/geneos/gateway/directory/probe/managedEntity/sampler[(@name=&quot;Windows Services&quot;)][(@type=&quot;Windows Defaults&quot;)]/dataview[(@name=&quot;Windows Services&quot;)]/rows/row/cell[(@column=&quot;status&quot;)]</target>
+					</targets>
+					<priority>1</priority>
+					<pathAliases>
+						<pathAlias name="Startup">../cell[(@column=&quot;startup&quot;)]</pathAlias>
+					</pathAliases>
+					<block>
+						<!-- example windows services rule-->
+						<!-- disabled by default as some services may be validly stopped -->
+						<!-- when startup is automatic-->
+						<!-- best practise to only monitor specific services and then enable this or similar rule-->
+						<if>
+							<and>
+								<like>
+									<dataItem>
+										<property>@value</property>
+									</dataItem>
+									<string>Stopped</string>
+								</like>
+								<like>
+									<dataItem>
+										<pathAlias ref="Startup"/>
+										<property>@value</property>
+									</dataItem>
+									<string>Automatic</string>
+								</like>
+							</and>
+							<transaction>
+								<update>
+									<property>state/@severity</property>
+									<severity>critical</severity>
+								</update>
+							</transaction>
+							<transaction>
+								<update>
+									<property>state/@severity</property>
+									<severity>ok</severity>
+								</update>
+							</transaction>
+						</if>
+					</block>
+				</rule>
+			</ruleGroup>
+			<ruleGroup name="Device IO">
+				<rule name="GBL-Inf-Device IO">
+					<targets>
+						<target>/geneos/gateway/directory/probe/managedEntity/sampler[(@name=&quot;Device IO&quot;)]/dataview/rows/row/cell[(@column=&quot;cpuUtiliisation&quot;)]</target>
+					</targets>
+					<priority>1</priority>
+					<block>
+						<if>
+							<gt>
+								<dataItem>
+									<property>@value</property>
+								</dataItem>
+								<integer>999999</integer>
+							</gt>
+							<transaction>
+								<update>
+									<property>state/@severity</property>
+									<severity>critical</severity>
+								</update>
+							</transaction>
+							<if>
+								<gt>
+									<dataItem>
+										<property>@value</property>
+									</dataItem>
+									<integer>80</integer>
+								</gt>
+								<transaction>
+									<update>
+										<property>state/@severity</property>
+										<severity>warning</severity>
+									</update>
+								</transaction>
+								<transaction>
+									<update>
+										<property>state/@severity</property>
+										<severity>ok</severity>
+									</update>
+								</transaction>
+							</if>
+						</if>
+					</block>
+				</rule>
+			</ruleGroup>
+		</ruleGroup>
+		<ruleGroup name="GLOBAL Process">
+			<default name="GLOBAL Process Default">
+				<rule>
+					<priorityGroup>10000</priorityGroup>
+				</rule>
+			</default>
+			<rule name="Instance Count 1">
+				<targets>
+					<target>/geneos/gateway/directory/probe/managedEntity/sampler[(param(&quot;PluginName&quot;)=&quot;PROCESSES&quot;)]/dataview/rows/row[not(contains(@name,&quot;#&quot;))]/cell[(@column=&quot;instanceCount&quot;)]</target>
+				</targets>
+				<priority>1</priority>
+				<block>
+					<if>
+						<lt>
+							<dataItem>
+								<property>@value</property>
+							</dataItem>
+							<integer>1</integer>
+						</lt>
+						<transaction>
+							<update>
+								<property>state/@severity</property>
+								<severity>critical</severity>
+							</update>
+						</transaction>
+						<if>
+							<gt>
+								<dataItem>
+									<property>@value</property>
+								</dataItem>
+								<integer>1</integer>
+							</gt>
+							<transaction>
+								<update>
+									<property>state/@severity</property>
+									<severity>warning</severity>
+								</update>
+							</transaction>
+							<transaction>
+								<update>
+									<property>state/@severity</property>
+									<severity>ok</severity>
+								</update>
+							</transaction>
+						</if>
+					</if>
+				</block>
+			</rule>
+		</ruleGroup>
+	</rules>
+	<databaseLogging>
+		<enabled>false</enabled>
+		<tables>
+			<table name="os_table">
+				<type>double</type>
+			</table>
+			<table name="net_table">
+				<type>double</type>
+			</table>
+			<table name="text_table">
+				<type>string</type>
+			</table>
+			<table name="processes_table">
+				<type>double</type>
+			</table>
+		</tables>
+		<items>
+			<item name="cpu">
+				<targets>
+					<target>/geneos/gateway/directory/probe/managedEntity/sampler[(param(&quot;PluginName&quot;)=&quot;CPU&quot;)]/dataview/rows/row/cell[(@column=&quot;percentUtilisation&quot;)]</target>
+					<target>/geneos/gateway/directory/probe/managedEntity/sampler[(param(&quot;PluginName&quot;)=&quot;CPU&quot;)]/dataview/rows/row[(@name=&quot;Average_cpu&quot;)]/cell[wild(@column,&quot;percent*&quot;)]</target>
+					<target>/geneos/gateway/directory/probe/managedEntity/sampler[(param(&quot;PluginName&quot;)=&quot;CPU&quot;)]/dataview/rows/row/cell[(@column=&quot;%processorTime&quot;)]</target>
+				</targets>
+				<percentMargin>2.0</percentMargin>
+				<table ref="os_table"/>
+			</item>
+			<item name="net">
+				<targets>
+					<target>/geneos/gateway/directory/probe/managedEntity/sampler[(param(&quot;PluginName&quot;)=&quot;NETWORK&quot;)]/dataview/rows/row/cell[wild(@column,&quot;packet*Rate&quot;)]</target>
+					<target>/geneos/gateway/directory/probe/managedEntity/sampler[(param(&quot;PluginName&quot;)=&quot;NETWORK&quot;)]/dataview/rows/row/cell[wild(@column,&quot;percent*Errors&quot;)]</target>
+					<target>/geneos/gateway/directory/probe/managedEntity/sampler[(param(&quot;PluginName&quot;)=&quot;NETWORK&quot;)]/dataview/rows/row/cell[wild(@column,&quot;mbit*Rate&quot;)]</target>
+					<target>/geneos/gateway/directory/probe/managedEntity/sampler[(param(&quot;PluginName&quot;)=&quot;NETWORK&quot;)]/dataview/rows/row/cell[wild(@column,&quot;packet*Drop&quot;)]</target>
+				</targets>
+				<percentMargin>2.0</percentMargin>
+				<table ref="net_table"/>
+			</item>
+			<item name="disk">
+				<targets>
+					<target>/geneos/gateway/directory/probe/managedEntity/sampler[(param(&quot;PluginName&quot;)=&quot;DEVICEIO&quot;)]/dataview/rows/row/cell[(@column=&quot;cpuUtiliisation&quot;)]</target>
+					<target>/geneos/gateway/directory/probe/managedEntity/sampler[(param(&quot;PluginName&quot;)=&quot;DISK&quot;)]/dataview/rows/row/cell[(@column=&quot;percentageUsed&quot;)]</target>
+					<target>/geneos/gateway/directory/probe/managedEntity/sampler[(param(&quot;PluginName&quot;)=&quot;DISK&quot;)]/dataview/rows/row/cell[(@column=&quot;freeSpace&quot;)]</target>
+				</targets>
+				<percentMargin>2.0</percentMargin>
+				<table ref="os_table"/>
+			</item>
+			<item name="hardware">
+				<targets>
+					<target>/geneos/gateway/directory/probe/managedEntity/sampler[(param(&quot;PluginName&quot;)=&quot;HARDWARE&quot;)]/dataview/rows/row[wild(@name,&quot;memory*&quot;)]/cell[(@column=&quot;Value&quot;)]</target>
+					<target>/geneos/gateway/directory/probe/managedEntity/sampler[(param(&quot;PluginName&quot;)=&quot;HARDWARE&quot;)]/dataview/rows/row[wild(@name,&quot;total*&quot;)]/cell[(@column=&quot;Value&quot;)]</target>
+					<target>/geneos/gateway/directory/probe/managedEntity/sampler[(param(&quot;PluginName&quot;)=&quot;HARDWARE&quot;)]/dataview/rows/row[(@name=&quot;swapUsed&quot;)]/cell[(@column=&quot;Value&quot;)]</target>
+				</targets>
+				<percentMargin>2.0</percentMargin>
+				<table ref="os_table"/>
+			</item>
+			<item name="processes">
+				<targets>
+					<target>/geneos/gateway/directory/probe/managedEntity/sampler[(param(&quot;PluginName&quot;)=&quot;PROCESSES&quot;)]/dataview/rows/row/cell[(@column=&quot;percentCPU&quot;)]</target>
+					<target>/geneos/gateway/directory/probe/managedEntity/sampler[(param(&quot;PluginName&quot;)=&quot;PROCESSES&quot;)]/dataview/rows/row/cell[(@column=&quot;residentSetSize&quot;)]</target>
+					<target>/geneos/gateway/directory/probe/managedEntity/sampler[(param(&quot;PluginName&quot;)=&quot;PROCESSES&quot;)]/dataview/rows/row/cell[(@column=&quot;percentMemory&quot;)]</target>
+					<target>/geneos/gateway/directory/probe/managedEntity/sampler[(param(&quot;PluginName&quot;)=&quot;PROCESSES&quot;)]/dataview/rows/row/cell[(@column=&quot;virtualMemory&quot;)]</target>
+				</targets>
+				<percentMargin>2.0</percentMargin>
+				<table ref="processes_table"/>
+			</item>
+		</items>
+	</databaseLogging>
+	<environments>
+		<environmentGroup disabled="true" name="EMS">
+			<environment name="EMS Rule Defaults">
+				<var name="EMS_QUEUED_MESSAGES_FAIL">
+					<integer>75</integer>
+				</var>
+				<var name="EMS_QUEUED_MESSAGES_WARN">
+					<integer>50</integer>
+				</var>
+				<var name="EMS_QUEUED_TOPICS_FAIL">
+					<integer>75</integer>
+				</var>
+				<var name="EMS_QUEUED_TOPICS_WARN">
+					<integer>50</integer>
+				</var>
+				<var name="EMS_PERCENT_USAGE_FAIL">
+					<integer>90</integer>
+				</var>
+				<var name="EMS_PERCENT_USAGE_WARN">
+					<integer>75</integer>
+				</var>
+				<environment name="EMS Connection">
+					<var name="EMS_HOST">
+						<string>EMS host here</string>
+					</var>
+					<var name="EMS_PORT">
+						<string>EMS port  here</string>
+					</var>
+					<var name="EMS_USER">
+						<string>EMS user here</string>
+					</var>
+					<var name="EMS_PASSWORD">
+						<string>EMS password here</string>
+					</var>
+				</environment>
+			</environment>
+		</environmentGroup>
+		<environmentGroup disabled="true" name="Java">
+			<environment name="Basic JVM">
+				<var name="JMX_URL">
+					<string>JMX_URL name here</string>
+				</var>
+				<var name="JavaApplicationName">
+					<string>Java Application Name Here</string>
+				</var>
+			</environment>
+		</environmentGroup>
+		<environmentGroup disabled="true" name="Global Inf">
+			<environment name="Infrastructure Defaults">
+				<var name="INF_CPU_UTILISATION_WARNING">
+					<integer>100</integer>
+				</var>
+				<var name="INF_CPU_UTILISATION_CRITICAL">
+					<integer>999999</integer>
+				</var>
+				<var name="INF_CPU_TOP_WARNING">
+					<integer>10</integer>
+				</var>
+				<var name="INF_CPU_TOP_CRITICAL">
+					<integer>999999</integer>
+				</var>
+				<var name="INF_MEM_IDLE_WARNING">
+					<integer>200</integer>
+				</var>
+				<var name="INF_MEM_IDLE_CRITICAL">
+					<integer>999999</integer>
+				</var>
+				<var name="INF_MEM_USED_WARNING">
+					<integer>75</integer>
+				</var>
+				<var name="INF_MEM_USED_CRITICAL">
+					<integer>999999</integer>
+				</var>
+				<var name="INF_SWAP_USED_WARNING">
+					<integer>90</integer>
+				</var>
+				<var name="INF_SWAP_USED_CRITICAL">
+					<integer>999999</integer>
+				</var>
+				<var name="INF_TCP_RETRAN_WARNING">
+					<integer>20</integer>
+				</var>
+				<var name="INF_TCP_RETRAN_CRITICAL">
+					<integer>999999</integer>
+				</var>
+				<var name="INF_ZOMBIE_WARNING">
+					<integer>10</integer>
+				</var>
+				<var name="INF_ZOMBIE_CRITICAL">
+					<integer>999999</integer>
+				</var>
+				<var name="INF_PAGING_CRITICAL">
+					<integer>999999</integer>
+				</var>
+				<environment name="Windows Defaults">
+					<var name="INF_DISK_FREE_WARNING">
+						<integer>200</integer>
+					</var>
+					<var name="INF_DISK_FREE_CRITICAL">
+						<integer>999999</integer>
+					</var>
+					<var name="INF_MEM_TOP_WARNING">
+						<integer>5</integer>
+					</var>
+					<var name="INF_MEM_TOP_CRITICAL">
+						<integer>999999</integer>
+					</var>
+				</environment>
+				<environment name="Unix Defaults">
+					<var name="INF_DISK_FREE_WARNING">
+						<integer>200</integer>
+					</var>
+					<var name="INF_DISK_FREE_CRITICAL">
+						<integer>999999</integer>
+					</var>
+					<var name="INF_MEM_TOP_WARNING">
+						<integer>5</integer>
+					</var>
+					<var name="INF_MEM_TOP_CRITICAL">
+						<integer>999999</integer>
+					</var>
+					<var name="INF_CPU_TOP_WARNING">
+						<integer>5</integer>
+					</var>
+					<var name="INF_CPU_TOP_CRITICAL">
+						<integer>999999</integer>
+					</var>
+					<var name="INF_DEVICE_IO_CRITICAL">
+						<integer>999999</integer>
+					</var>
+					<var name="INF_DEVICE_IO_WARNING">
+						<integer>80</integer>
+					</var>
+					<var name="INF_IPCS_COMMAND">
+						<string>/usr/bin/ipcs</string>
+					</var>
+				</environment>
+			</environment>
+		</environmentGroup>
+	</environments>
+	<staticVars>
+		<fkmTables>
+			<fkmTable name="UNCONFIRMED_MESSAGES">
+				<keys>
+					<key>
+						<setKey>
+							<match>
+								<searchString>
+									<data>error</data>
+								</searchString>
+							</match>
+						</setKey>
+						<message>
+							<data>Unconfirmed Error</data>
+						</message>
+					</key>
+					<key>
+						<setKey>
+							<match>
+								<searchString>
+									<data>fatal</data>
+								</searchString>
+							</match>
+						</setKey>
+						<message>
+							<data>Unconfirmed Fatal</data>
+						</message>
+					</key>
+					<key>
+						<setKey>
+							<match>
+								<searchString>
+									<data>abort</data>
+								</searchString>
+							</match>
+						</setKey>
+						<message>
+							<data>Unconfirmed Abort</data>
+						</message>
+					</key>
+					<key>
+						<setKey>
+							<match>
+								<searchString>
+									<data>fail</data>
+								</searchString>
+							</match>
+						</setKey>
+						<message>
+							<data>Unconfirmed Failure</data>
+						</message>
+					</key>
+					<key>
+						<setKey>
+							<match>
+								<searchString>
+									<data>critical</data>
+								</searchString>
+							</match>
+						</setKey>
+						<message>
+							<data>Unconfirmed Critical</data>
+						</message>
+					</key>
+					<key>
+						<setKey>
+							<match>
+								<searchString>
+									<data>warn</data>
+								</searchString>
+							</match>
+						</setKey>
+						<message>
+							<data>Unconfirmed Warning</data>
+						</message>
+					</key>
+				</keys>
+			</fkmTable>
+		</fkmTables>
+		<processDescriptors>
+			<processDescriptor name="Gateway">
+				<alias>
+					<data>Gateway</data>
+				</alias>
+				<ID>
+					<searchString>
+						<data>gateway2.*</data>
+						<var ref="Gateway Name"/>
+					</searchString>
+				</ID>
+			</processDescriptor>
+		</processDescriptors>
+	</staticVars>
+	<operatingEnvironment>
+		<gatewayName/>
+	</operatingEnvironment>
+</gateway>
