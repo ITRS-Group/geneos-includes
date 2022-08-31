@@ -29,7 +29,7 @@ To enable a load monitoring stats file to be written at regular intervals you sh
   1. Copy the XML below:
 
      ```xml
-     <includeGroup name="Gateway Load Monitoring">
+     <includeGroup name="Gateway Load Monitor">
        <include>
          <priority>10601</priority>
          <required>false</required>
@@ -53,7 +53,7 @@ You should probably create a new Gateway specifically to monitor load on your ot
   1. Copy the XML below:
 
      ```xml
-     <includeGroup name="Geneos Load Monitoring">
+     <includeGroup name="Geneos Load Monitor">
          <include>
              <priority>10401</priority>
              <required>false</required>
@@ -84,7 +84,7 @@ For each Gateway you want to monitor you must create a Managed Entity. Optionall
 <managedEntity name="Example Load Monitor">
   <probe ref="localhost"></probe>
   <addTypes>
-      <type ref="Gateway Load Monitoring"></type>
+      <type ref="Gateway Load Monitor"></type>
       <type ref="Gateway Environment"></type>
   </addTypes>
   <var name="gwLoadDirectory">
@@ -102,7 +102,7 @@ If you cannot deploy a new Netprobe then you should create a Managed Entity moun
 <managedEntity name="Example Load Monitor">
   <virtualProbe ref="Virtual Probe"/>
   <addTypes>
-    <type ref="Gateway Load Monitoring"></type>
+    <type ref="Gateway Load Monitor"></type>
   </addTypes>
   <var name="gwLoadDirectory">
     <string>/path/to/directory/containing/stats/file</string>
