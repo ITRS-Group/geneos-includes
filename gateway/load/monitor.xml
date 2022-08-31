@@ -2080,8 +2080,6 @@
 			<stringList>
 				<string>cpu1Min</string>
 				<string>cpu5Min</string>
-				<string>cpuHour</string>
-				<string>cpuDay</string>
 			</stringList>
 		</var>
 		<var name="gwLoadEnvHistory Columns">
@@ -2094,12 +2092,8 @@
 			<stringList>
 				<string>cpu1Min</string>
 				<string>cpu5Min</string>
-				<string>cpuHour</string>
-				<string>cpuDay</string>
 				<string>updates1Min</string>
 				<string>updates5Min</string>
-				<string>updatesHour</string>
-				<string>updatesDay</string>
 			</stringList>
 		</var>
 	</operatingEnvironment>

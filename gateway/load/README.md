@@ -124,20 +124,20 @@ There are a number of variables that can be used to override default behaviour:
     The name of the stats file your gateways write to. You may wish to changes this if you write to a file containing the name of the gateway in a common directory.
   * `gwLoadSampleInterval` - Default 60 seconds
     The sample interval for the Gateway Load samplers.
-  * `gwLoadHistoryColumns` - Default `[ cpu1Min, cpu5Min, cpuHour, cpuDay]`
-    A string list that can be used to limit - but not add to - the time interval columns used to present the calculated CPU loads. If the number of Gateways being monitored is large then the load of on monitoring gateway can also increase. by removing unwanted columns you can reduce both the Rule load and the volume of History Periods used.
-  * `gwLoadDatabaseColumns` - Default `[ cpu1Min, cpu5Min, cpuHour, cpuDay, updates1Min, updates5Min, updatesHour, updatesDay ]`
-    As above, you can reduce the columns displayed in the Database Logging monitor views, if required.
+  * `gwLoadHistoryColumns` - Default `[ cpu1Min, cpu5Min ]` Also available `[ cpuHour, cpuDay ]`
+    A string list variable that sets which additional columns are added to the many of the dataviews. If the columns exist then Rules run to populate them using History Periods and a delta calculation. Enabling all of these can be expensive in both CPU and memory and will also delay the Gateway start-up. The default lets you see the percentage of CPU used for each metric for the previous 1 and 5 minutes, but you can also add the last hour and last day by redefining this string list variable.
+  * `gwLoadDatabaseColumns` - Default `[ cpu1Min, cpu5Min, updates1Min, updates5Min ]` - Also available `[ cpuHour, cpuDay, updatesHour, updatesDay ]`
+    As above, you can change the columns calculated and displayed in the Database Logging monitor views, as required. The defaults show the CPU percentage and volume of updates for the last minute and last 5 minutes.
 
 * For Additional Environment Monitoring (with Netprobe)
-* `gwLoadGatewayName` - Default `none`, Required
-  This should be set to an identifier that can be used to match the Gateway process. Normally this is the Gateway name.
-* `gwLoadLogFile` - Default `gateway.log`
-  The gateway log file name. Normally does not need to be changed.
-* `gwLoadEnvInterval` - Default 5 seconds
-  The sample interval for the environment samplers.
-* `gwLoadEnvHistoryColumns` - Default `[ hour, day]`
-  As above for `gwLoadHistoryColumns` this string list can be used to limit which additional columns are calculated.
+  * `gwLoadGatewayName` - Default `none`, Required
+    This should be set to an identifier that can be used to match the Gateway process. Normally this is the Gateway name.
+  * `gwLoadLogFile` - Default `gateway.log`
+    The gateway log file name. Normally does not need to be changed.
+  * `gwLoadEnvInterval` - Default 5 seconds
+    The sample interval for the environment samplers.
+  * `gwLoadEnvHistoryColumns` - Default `[ hour, day ]`
+    As above for `gwLoadHistoryColumns` this string list can be used to limit which additional columns are calculated. As Data Quality statistics are published to the Gateway log every 10 minute there are only two calculated columns for the last hour and last day, and in both cases they show the maximum values for each period. The data ijn the Gateway log is not granular enough to produce averages and so on.
 
 ## More Details
 
