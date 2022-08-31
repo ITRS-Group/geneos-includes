@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<!--Edited using Gateway Setup Editor version GA5.10.0-210929 at 2022-08-24 14:14:33 by LDN\pgalbavy logged on to gateway loadmon from ITRSLP146-->
+<gateway compatibility="1" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="http://schema.itrsgroup.com/GA5.14.3-220812/gateway.xsd">
+	<operatingEnvironment>
+		<dnsCacheExpiryTime>5</dnsCacheExpiryTime>
+		<numRuleEvaluationThreads>4</numRuleEvaluationThreads>
+		<var name="gatewayName">
+			<macro>
+				<gatewayName/>
+			</macro>
+		</var>
+		<var name="insecureGatewayPort">
+			<macro>
+				<insecureGatewayPort/>
+			</macro>
+		</var>
+		<var name="managedEntityName">
+			<macro>
+				<managedEntityName/>
+			</macro>
+		</var>
+		<var name="netprobeHost">
+			<macro>
+				<netprobeHost/>
+			</macro>
+		</var>
+		<var name="netprobeName">
+			<macro>
+				<netprobeName/>
+			</macro>
+		</var>
+		<var name="netprobePort">
+			<macro>
+				<netprobePort/>
+			</macro>
+		</var>
+		<var name="samplerName">
+			<macro>
+				<samplerName/>
+			</macro>
+		</var>
+		<var name="secureGatewayPort">
+			<macro>
+				<secureGatewayPort/>
+			</macro>
+		</var>
+	</operatingEnvironment>
+</gateway>
