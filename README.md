@@ -1,10 +1,12 @@
-# geneos-includes
-A collection of useful Geneos configuration files and templates
+# Geneos Include Files
 
-## Legacy include files
+We are making available a suite of example Geneos include files. The goal is to make your life easier and quicker for common configuration tasks. At the moment this is quite limited but we will be adding more content as time goes on. We welcome contributions from our users.
 
-The first category we have published is the [legacy includes](legacy/) pulled from the last release of the `geneos-utils` archive.
+## [Gateway Configuration](gateway/)
 
-## Future additions
+Include files that are related to the Gateway's own configuration as opposed to the monitored environment, including some baseline configuration and load monitoring.
 
-As we move forward we will begin to publish both ready-to-use include files that can be either downloaded or directly referenced as a URL in the Geneos GSE as well as templates that will serve as a input for automated tools to build useful configurations for both the Gateway and also for Netprobes and maybe other components.
+## [Legacy Includes](legacy/)
+
+This page contains older, [legacy includes](legacy/) pulled from the last release of the `geneos-utils` archive.
+
