@@ -11,15 +11,17 @@
 				<sampler ref="gwLoadRulesByEntity"/>
 				<sampler ref="gwLoadDatabaseByEntity"/>
 				<sampler ref="gwLoadDatabaseByItem"/>
-				<sampler ref="gwLoadXPathsAbsolute"/>
-				<sampler ref="gwLoadXPathsRelative"/>
 				<sampler ref="gwLoadGatewaySQLByEntity"/>
 				<sampler ref="gwLoadGatewaySQLBySampler"/>
 				<sampler ref="gwLoadRulesByType"/>
 				<sampler ref="gwLoadRulesByPlugin"/>
 				<sampler ref="gwLoadRuleThreads"/>
-				<sampler disabled="true" ref="gwLoadRulesBySamplerAndRule"/>
-				<sampler disabled="true" ref="gwLoadRulesByEntityAndRule"/>
+				<sampler ref="gwLoadRulesBySamplerAndRule" disabled="true"/>
+				<sampler ref="gwLoadRulesByEntityAndRule" disabled="true"/>
+			</type>
+			<type name="Gateway Load Monitor XPaths">
+				<sampler ref="gwLoadXPathsAbsolute"/>
+				<sampler ref="gwLoadXPathsRelative"/>
 			</type>
 			<type name="Gateway Environment">
 				<sampler ref="gwCPU"/>
@@ -940,9 +942,6 @@
 		</samplerGroup>
 	</samplers>
 	<rules>
-		<startupDelay>
-			<interval>45</interval>
-		</startupDelay>
 		<historyPeriod name="1 minute">
 			<calculationPeriod>
 				<rollingPeriod>

@@ -118,6 +118,18 @@ If you cannot deploy a new Netprobe then you should create a Managed Entity moun
 
 Note that the `Gateway Environment` Type is not used as this requires plugins that are only available on a Netprobe.
 
+#### Types
+
+There are three Types that define which Samplers are used:
+
+* `Gateway Load Monitor`
+* `Gateway Load Monitor XPaths`
+* `Gateway Environment`
+
+The Type `Gateway Load Monitor XPaths` is distinct from the main `Gateway Load Monitor` because the XPath specific function of the load monitoring plugins can be impacted on larger monitored Gateway, with many configured XPaths and matches, and cause the monitoring Gateway to become overloaded and never finish presenting the data. If you want to see your performance stats relating the XPaths you should add this Type to the Managed Entity for the source Gateway but be careful in case of too many (thousands) of XPaths.
+
+#### Variables
+
 There are a number of variables that can be used to override default behaviour:
 
 * For Load Monitoring
