@@ -4,7 +4,7 @@
 		<writeStatsToFile>
 			<filename>stats.xml</filename>
 			<enablePeriodicWrite>true</enablePeriodicWrite>
-			<writeInterval>5</writeInterval>
+			<writeInterval>15</writeInterval>
 		</writeStatsToFile>
 	</operatingEnvironment>
 </gateway>
