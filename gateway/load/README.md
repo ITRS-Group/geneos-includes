@@ -1,6 +1,6 @@
 # Load Monitoring Include Files
 
-**NOTE: While these configuration will run on any Geneos Gateway you are strongly advised to only deploy this in production on 6.4 and late releases. For large data sets we observed and reported performance issues with the Gateway-Load plugin and these were addressed in the 6.4 release.**
+**NOTE: While these configuration will run on any Geneos Gateway you are strongly advised to only deploy this in production on 6.4 and later releases. For large data sets we observed and reported performance issues with the Gateway-Load plugin and these were addressed in the 6.4 release.**
 
 This page contains Gateway include files for monitoring the load of your Geneos Gateways. The primary challenge when monitoring a busy Gateway, either for diagnostic purposes or to be alerted if load exceeds desired limits, is that the Gateway itself may stop responding and have a backlog of monitored data (the 'Max Data Age'). This can be addressed by letting your Gateways write snapshots of internal data to an XML file which can then be loaded and processed by a less loaded Gateway. The stats file is written from it's own thread and so it not generally impacted by peaks in processing load in the Gateway process.
 
