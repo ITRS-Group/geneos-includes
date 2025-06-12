@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="ISO-8859-1"?>
-<gateway compatibility="1" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="http://schema.itrsgroup.com/GA5.14.3-220812/gateway.xsd">
+<gateway compatibility="1" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="http://schema.itrsgroup.com/GA7.4.0-250527/gateway.xsd">
 	<types>
 		<typeGroup name="Gateway Load">
 			<type name="Gateway Load Monitor">
@@ -16,8 +16,8 @@
 				<sampler ref="gwLoadRulesByType"/>
 				<sampler ref="gwLoadRulesByPlugin"/>
 				<sampler ref="gwLoadRuleThreads"/>
-				<sampler ref="gwLoadRulesBySamplerAndRule" disabled="true"/>
-				<sampler ref="gwLoadRulesByEntityAndRule" disabled="true"/>
+				<sampler disabled="true" ref="gwLoadRulesBySamplerAndRule"/>
+				<sampler disabled="true" ref="gwLoadRulesByEntityAndRule"/>
 			</type>
 			<type name="Gateway Load Monitor XPaths">
 				<sampler ref="gwLoadXPathsAbsolute"/>
@@ -777,7 +777,7 @@
 							<process>
 								<data>
 									<alias>
-										<data>gateway</data>
+										<var ref="gwLoadGatewayName"/>
 									</alias>
 									<ID>
 										<searchString>
